@@ -1,0 +1,45 @@
+# Ignore files in repository working files
+
+# Ignore user-specific files in PyCharm environment
+# - based on experience, it is easy enough to set up a PyCharm dev environment
+#   so don't hand off any PyCharm files in the repository
+.idea/
+venv/
+__pycache__/
+# The following is a newer convention
+venv-qgis-python37/
+
+# Ignore "junk" and other files often used for work
+junk
+
+# Ignore compiled Python files
+*.py[cod]
+
+# Ignore Python stack dump files when a crash occurs
+*.stackdump
+
+# Ignore log files
+*.log
+
+# Ignore build folder files, used to create installers
+# - remove these at some point when process is in place since local .gitignore files are used
+build/*.tar
+build/*.gz
+build/*.zip
+build/tmp-gp/
+build/tmp-gptest/
+
+# MkDocs site
+doc-dev-mkdocs-project/site/
+
+# vim editor files
+
+*.swp
+*.swo
+
+# Microsoft temporary files
+*.tmp
+~$*
+
+# Ignore file extension used as temporary for .bat, etc. so email attachment works
+*.xxx
