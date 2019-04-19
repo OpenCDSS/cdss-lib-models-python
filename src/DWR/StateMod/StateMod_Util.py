@@ -554,3 +554,15 @@ class StateMod_Util:
     # program name.  However, a full path can be specified to override the PATH.
     # See the system/StateModGUI.cfg file for configuration properties.
     __smdeltaExecutable = "SmDelta"
+
+    @staticmethod
+    def isMissing(i):
+        """
+        Determine whether an integer value is missing.
+        :param i: Integer value to check
+        :return: True if the value is missing, False if not.
+        """
+        if i == StateMod_Util.MISSING_INT:
+            return True
+        else:
+            return False

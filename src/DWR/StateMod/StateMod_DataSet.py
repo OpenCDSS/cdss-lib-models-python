@@ -21,10 +21,8 @@
 #
 # NoticeEnd
 
-import io
 import logging
 import os
-import sys
 
 from RTi.Util.IO.DataSet import DataSet
 from RTi.Util.IO.DataSetComponent import DataSetComponent
@@ -33,6 +31,7 @@ from RTi.Util.IO.PropList import PropList
 from RTi.Util.Time.StopWatch import StopWatch
 from RTi.Util.Time.TimeInterval import TimeInterval
 from DWR.StateMod.StateMod_Data import StateMod_Data
+from DWR.StateMod.StateMod_StreamGage import StateMod_StreamGage
 from DWR.StateMod.StateMod_Util import StateMod_Util
 
 
@@ -1114,6 +1113,150 @@ class StateMod_DataSet(DataSet):
         except Exception as e:
             pass  # not important
 
+    def checkComponentVisibility(self):
+        visibility = True
+
+        # Check for daily data set (some may be reset in other checks below)...
+
+        if self.__iday != 0:
+            visibility = True
+        else:
+            visibility = False
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMGAGE_NATURAL_FLOW_TS_DAILY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DEMAND_TS_DAILY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_DAILY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_DEMAND_TS_DAILY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_DAILY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DELAY_TABLE_DAILY_GROUP)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DELAY_TABLES_DAILY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_DAILY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_DAILY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DIVERSION_TS_DAILY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_PUMPING_TS_DAILY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_DAILY)
+        if comp is not None:
+            comp.setVisible(visibility)
+
+        # The stream estimate natural flow time series are always invisible because
+        # they are shared with the stream gage natural time series files...
+
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_MONTHLY)
+        if comp is not None:
+            comp.setVisible(False)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_DAILY)
+        if comp is not None:
+            comp.setVisible(False)
+
+        # Check well data set...
+
+        if self.hasWellData(False):
+            visiblity = True
+        else:
+            visibility = False
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_GROUP)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_STATIONS)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_RIGHTS)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_DEMAND_TS_MONTHLY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_PUMPING_TS_MONTHLY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        if self.__iday != 0:  # Else checked above
+            comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_DEMAND_TS_DAILY)
+            if comp is not None:
+                comp.setVisible(visibility)
+            comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_PUMPING_TS_DAILY)
+            if comp is not None:
+                comp.setVisible(visibility)
+
+        # Check instream demand flag (component is in the instream flow group)...
+
+        if (self.__ireach == 2) or (self.__ireach == 3):
+            visibility = True
+        else:
+            visibility = False
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_MONTHLY)
+        if comp is not None:
+            comp.setVisible(visibility)
+
+        # Check SJRIP flag...
+
+        if self.__isjrip != 0:
+            visiblity = True
+        else:
+            visibility = False
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_SANJUAN_RIP)
+        if comp is not None:
+            comp.setVisible(visibility)
+
+        # Check irrigation practice flag (component is in the diversion group)...
+        if self.__itsfile != 0:
+            visibility = True
+        else:
+            visibility = False
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_IRRIGATION_PRACTICE_TS_YEARLY)
+        if comp is not None:
+            comp.setVisible(visibility)
+
+        # Check variable efficiency flag (component is in the diversions group)...
+
+        if self.__ieffmax != 0:
+            visibility = True
+        else:
+            visibility = False
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_MONTHLY)
+        if comp is not None:
+            comp.setVisible(visibility)
+        if self.__iday != 0:  # Else already check above
+            comp = self.getComponentForComponentType(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_DAILY)
+            if comp is not None:
+                comp.setVisible(visibility)
+
+        # Check the soil moisture flag (component is in the diversion group)...
+        if self.__soild != 0.0:
+            visibility = True
+        else:
+            visibility = False
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STATECU_STRUCTURE)
+        if comp is not None:
+            comp.setVisible(visibility)
+
+        # Hide the network (Graphical) file until it is fully implemented...
+
+        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_NETWORK)
+        if comp is not None:
+            comp.setVisible(True)
+
+
     def getDataFilePathAbsolute(self, comp):
         """
         Determine the full path to a component data file, including accounting for the
@@ -1129,6 +1272,20 @@ class StateMod_DataSet(DataSet):
         else:
             return IOUtil.getPathUsingWorkingDir(str(self.getDataSetDirectory() + os.path.sep + file))
 
+    def getDataFilePathAbsoluteFromString(self, file):
+        """
+        Determine the full path to a component data file, including accounting for the
+        working directory.  If the file is already an absolute path, the same value is
+        returned.  Otherwise, the data set directory is prepended to the component data
+        file name (which may be relative to the data set directory) and then calls IOUtil.getPathUsingWorkingDir().
+        :param file: File name (e.g. from component getFileName())
+        :return: Full path to the data file (absolute), using the working directory.
+        """
+        if os.path.isabs(file):
+            return file
+        else:
+            return IOUtil.getPathUsingWorkingDir(str(self.getDataSetDirectory() + os.path.sep + file))
+
     def getUnhandledResponseFileProperties(self):
         """
         Return the list of unhandled response file properties. These are entries in the *rsp file that the
@@ -1136,6 +1293,29 @@ class StateMod_DataSet(DataSet):
         :return: properties from the response file that are not explicitly handled
         """
         return self.__unhandledResponseFileProperties
+
+    def hasWellData(self, is_active):
+        """
+        Indicate whether the data set has well data (iwell not missing and iwell not equal to 0).
+        Use this method instead of checking iwell directly to simplify logic and allow
+        for future changes to the model input.
+        :param is_active: True if the data set includes well data (iwell not missing and i well !=0 ).
+        Return False if well data are not used.
+        :return: Only return true if well data are included in the dat set and the data are active
+        (iwell = 1)
+        """
+        if is_active:
+            if self.__iwell == 1:
+                # Well data are included in the data set and are used...
+                return True
+            else:
+                # Well data may or may not be included in the data set but are not used...
+                return False
+        elif not StateMod_Util.isMissing(self.__iwell) and (self.__iwell != 0):
+            return True
+        else:
+            # Well data are not included...
+            return False
 
     def initialize(self):
         """
@@ -1563,7 +1743,7 @@ class StateMod_DataSet(DataSet):
                 if comp is not None and fn is not None:
                     comp.setDataFileName(fn)
                 # Read the data...
-                # TODO @jurentie 04/18/2019 - read the data
+                # TODO @jurentie 04/19/2019 - read the data
             except Exception as e:
                 logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
                                " See log file for more on error:" + str(e) + ")")
@@ -1603,7 +1783,12 @@ class StateMod_DataSet(DataSet):
                 if comp is not None and fn is not None:
                     comp.setDataFileName(fn)
                 # Read the data...
-                # TODO @jurentie 04/18/2019 - read the data
+                if (readData) and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn))):
+                    readTime.clear()
+                    readTime.start()
+                    fn = self.getDataFilePathAbsoluteFromString(fn)
+                    self.readStateModFile_Announce1(comp)
+                    comp.setData(StateMod_Diversion.readStateModFile(fn))
             except Exception as e:
                 logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
                                " See log file for more on error:" + str(e) + ")")
@@ -1623,11 +1808,16 @@ class StateMod_DataSet(DataSet):
                 if comp is not None and fn is not None:
                     comp.setDataFileName(fn)
                 # Read the data...
-                # TODO @jurentie 04/18/2019 - read the data
+                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
+                    readTime.clear()
+                    readTime.start()
+                    fn = self.getDataFilePathAbsoluteFromString(fn)
+                    comp.setData(StateMod_StreamGage.readStateModFile(fn))
             except Exception as e:
                 logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
+                # TODO @jurentie 04/19/2019 - needs updating
                 comp.setErrorReadingInputFile(True)
             finally:
                 comp.setDirty(False)
@@ -2709,8 +2899,6 @@ class StateMod_DataSet(DataSet):
                 comp.setDirty(False)
                 # readTime.stop()
                 self.readStateModFile_Announce2(comp, readTime.getSeconds())
-
-            print("things are going well...")
         except Exception as e:
             # Main catch for all reads
             message = "Unexpected error during read ( {} ) - please contact support.".format(e)
@@ -2718,6 +2906,41 @@ class StateMod_DataSet(DataSet):
             logger.warning(e)
             # TODO Just rethrow for now
             # Throw error
+
+        # Set component visibility based on the control information...
+        self.checkComponentVisibility()
+
+        totalReadTime.stop()
+        msg = "Total time to read all files is {:3f} seconds".format(totalReadTime.getSeconds())
+        logger.info(msg)
+        #self.sendProcessListenerMessage(22, msg)
+        self.setDirty(StateMod_DataSet.COMP_CONTROL, False)
+
+        print("things are going well...")
+
+    def readStateModFile_Announce1(self, comp):
+        """
+        This method is a helper routine to readStateModFile().  It calls
+        Message.printStatus() with the message that a particular file is being read,
+        including path.  Then it prints a similar, but shorter,
+        message to the status bar.  If there is an error with the file (not specified,
+        does not exist, etc.), then an Exception is thrown.  There are many StateMod
+        files and therefore the same basic checks are done many times.
+        :param comp: Data set component that is being read.
+        """
+        logger = logging.getLogger("StateMod")
+        fn = self.getDataFilePathAbsolute(comp)
+        description = comp.getComponentName()
+
+        if (fn is not None) or (fn.length() == 0):
+            logger.warning(description + " file name unavailable")
+        # TODO - need to know whether this is an error that the user should acknowledge...
+        # TODO - error handling
+
+        msg = "Reading " + description + " data from \"" + fn + "\""
+        # The status message is printed because process listeners may not be registered.
+        logger.info("StateMod_DataSet.readInputAnnounce1")
+        # self.sendProcessListenerMessage( StateMod_GUIUtil.STATUS_READ_START, msg)
 
 
     def readStateModFile_Announce2(self, comp, seconds):

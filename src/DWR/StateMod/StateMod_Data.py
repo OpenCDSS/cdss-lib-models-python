@@ -172,3 +172,50 @@ class StateMod_Data:
         self._new_utm = 0
         self._utm_x = -999
         self._utm_y = -999
+
+    def setDirty(self, dirty):
+        """
+        Sets whether the data is dirty or not.
+        :param dirty: whether the data is dirty or not.
+        """
+        self._isDirty = dirty
+
+    def setID(self, s):
+        """
+        Set the ID
+        :param s: the new ID
+        """
+        if (s is not None) and (s != self._id):
+            if (not self._isClone) and (self._dataset is not None):
+                self._dataset.setDirty(self._smdata_type, True)
+            self._id = s
+
+    def setName(self, s):
+        """
+        Set the name
+        :param s: the new Name
+        """
+        if s is None:
+            return
+        if s != self._name:
+            if (not self._isClone) and (self._dataset is not None):
+                self._dataset.setDirty(self._smdata_type, True)
+            self._name = s
+
+    def __str__(self):
+        """
+        Returns a String representation of this object. Omit comment.
+        :return: a String representation of this object.
+        """
+        return "{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}".format(self._isDirty, self._utm_x, self._utm_y,
+                                                                       self._new_utm, self._switch, self._id,
+                                                                       self._name, self._cgoto, self._smdata_type,
+                                                                       self._mapLabel, self._mapLabelDisplayID,
+                                                                       self._mapLabelDisplayName)
+
+    def __repr__(self):
+        """
+        Returns a String representation of this object. Omit comment.
+        :return: a String representation of this object.
+        """
+        return self.__str__()
