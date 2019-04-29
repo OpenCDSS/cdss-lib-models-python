@@ -31,7 +31,11 @@ from RTi.Util.IO.PropList import PropList
 from RTi.Util.Time.StopWatch import StopWatch
 from RTi.Util.Time.TimeInterval import TimeInterval
 from DWR.StateMod.StateMod_Data import StateMod_Data
+from DWR.StateMod.StateMod_Diversion import StateMod_Diversion
+from DWR.StateMod.StateMod_DiversionRight import StateMod_DiversionRight
+from DWR.StateMod.StateMod_RiverNetworkNode import StateMod_RiverNetworkNode
 from DWR.StateMod.StateMod_StreamGage import StateMod_StreamGage
+from DWR.StateMod.StateMod_TS import StateMod_TS
 from DWR.StateMod.StateMod_Util import StateMod_Util
 
 
@@ -1628,6 +1632,17 @@ class StateMod_DataSet(DataSet):
         self.__soild = 0.0  # Soil moisture accounting. Default to not used.
         self.__isig = 0  # Significant figures for output.
 
+    def lookupTimeSeriesDataType(self, comp_type):
+        """
+        Determine the time series data type string for a component type.
+        :param comp_type: Component type.
+        :return: the time series data type string or an empty string if not found.
+        The only problem is with COMP_RESERVOIR_TARGET_TS_MONTHLY and
+        COMP_RESERVOIR_TARGET_TS_DAILY, each of which contain both the maximum and
+        minimum time series.  For these components, add "Max" and "Min" to the returned values.
+        """
+        return self.__component_ts_data_types[comp_type]
+
     def readStateModFile(self, filename, readData, readTimeSeries, useGUI, parent):
         """
         Read the StateMod response file and fill the current StateMod_DataSet object.
@@ -1743,7 +1758,12 @@ class StateMod_DataSet(DataSet):
                 if comp is not None and fn is not None:
                     comp.setDataFileName(fn)
                 # Read the data...
-                # TODO @jurentie 04/19/2019 - read the data
+                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
+                    readTime.clear()
+                    readTime.start()
+                    fn = self.getDataFilePathAbsoluteFromString(fn)
+                    self.readStateModFile_Announce1(comp)
+                    comp.setData(StateMod_RiverNetworkNode.readStateModFile(fn))
             except Exception as e:
                 logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
                                " See log file for more on error:" + str(e) + ")")
@@ -2003,6 +2023,17 @@ class StateMod_DataSet(DataSet):
                     comp.setDataFileName(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
+                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
+                    readTime.clear()
+                    readTime.start()
+                    fn = self.getDataFilePathAbsoluteFromString(fn)
+                    self.readStateModFile_Announce1(comp)
+                    comp.setData(StateMod_DiversionRight.readStateModFile(fn))
+                    logger.info("Connecting diversion rights to diversion stations")
+                    StateMod_Diversion.connectAllRights(
+                        self.getComponentForComponentType(StateMod_DataSet.COMP_DIVERSION_STATIONS).getData(),
+                        comp.getData()
+                    )
             except Exception as e:
                 logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
                                " See log file for more on error:" + str(e) + ")")
@@ -2061,6 +2092,12 @@ class StateMod_DataSet(DataSet):
                     comp.setDataFileName(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
+                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn) > 0)):
+                    readTime.clear()
+                    readTime.start()
+                    fn = self.getDataFilePathAbsoluteFromString(fn)
+                    self.readStateModFile_Announce1(comp)
+                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
             except Exception as e:
                 logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
                                " See log file for more on error:" + str(e) + ")")
@@ -2121,7 +2158,19 @@ class StateMod_DataSet(DataSet):
                 if comp is not None and fn is not None:
                     comp.setDataFileName(fn)
                 # Read the data...
-                # TODO @jurentie 04/18/2019 - read the data
+                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
+                    readTime.clear()
+                    readTime.start()
+                    fn = self.getDataFilePathAbsoluteFromString(fn)
+                    self.readStateModFile_Announce1(comp)
+                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                    if v is None:
+                        v = []
+                    size = len(v)
+                    self.setNumeva(size)
+                    for i in range(size):
+                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_EVAPORATION_TS_YEARLY))
+                    comp.setData(v)
             except Exception as e:
                 logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
                                " See log file for more on error:" + str(e) + ")")
@@ -2873,7 +2922,7 @@ class StateMod_DataSet(DataSet):
                     logger.info("Unhandled response file property: " + prop.getKey() + " = " + prop.getValue())
                     unhandledResponseFileProperties.set(prop)
 
-            logger.info("\n" + self.toStringDefinitions())
+            logger.info("DataSet: \n" + self.toStringDefinitions())
 
             totalReadTime.stop()
             logger.info("Total time to read StateMod files is " + "{:3f}".format(totalReadTime.getSeconds()) +
@@ -2932,14 +2981,14 @@ class StateMod_DataSet(DataSet):
         fn = self.getDataFilePathAbsolute(comp)
         description = comp.getComponentName()
 
-        if (fn is not None) or (fn.length() == 0):
+        if (fn is None) or (len(fn) == 0):
             logger.warning(description + " file name unavailable")
         # TODO - need to know whether this is an error that the user should acknowledge...
         # TODO - error handling
 
         msg = "Reading " + description + " data from \"" + fn + "\""
         # The status message is printed because process listeners may not be registered.
-        logger.info("StateMod_DataSet.readInputAnnounce1")
+        logger.info(msg)
         # self.sendProcessListenerMessage( StateMod_GUIUtil.STATUS_READ_START, msg)
 
 
@@ -2957,6 +3006,15 @@ class StateMod_DataSet(DataSet):
 
         # The status message is printed because process listeners may not be registered.
         msg = description + " data read from \"" + fn + "\" in " + str("{:3f}".format(seconds)) + " seconds"
+
+    def setNumeva(self, numeva):
+        """
+        Set number of evaporation stations.
+        :param numeva: number of stations
+        """
+        if numeva != self.__numeva:
+            self.__numeva = numeva
+            self.setDirty(StateMod_DataSet.COMP_CONTROL, True)
 
     def toStringDefinitions(self):
         """

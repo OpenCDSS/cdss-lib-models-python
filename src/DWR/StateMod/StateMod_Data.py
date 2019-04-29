@@ -156,6 +156,12 @@ class StateMod_Data:
 
         self.initialize()
 
+    def getID(self):
+        """
+        Return the ID
+        """
+        return self._id
+
     def initialize(self):
         """
         Initialize data members
@@ -172,6 +178,18 @@ class StateMod_Data:
         self._new_utm = 0
         self._utm_x = -999
         self._utm_y = -999
+
+    def setCgoto(self, s):
+        """
+        Set the Cgoto
+        :param cgoto:the new Cgoto
+        """
+        if s is None:
+            return
+        if not s == self._cgoto:
+            if (not self._isClone) and (self._dataset is not None):
+                self._dataset.setDirty(self._smdata_type, True)
+            self._cgoto = s
 
     def setDirty(self, dirty):
         """
@@ -201,6 +219,16 @@ class StateMod_Data:
             if (not self._isClone) and (self._dataset is not None):
                 self._dataset.setDirty(self._smdata_type, True)
             self._name = s
+
+    def setSwitch(self, i):
+        """
+        Set the switch
+        :param i: the new switch: 1 = on, 0 = off
+        """
+        if i != self._switch:
+            if (not self._isClone) and (self._dataset is not None):
+                self._dataset.setDirty(self._smdata_type, True)
+            self._switch = i
 
     def __str__(self):
         """

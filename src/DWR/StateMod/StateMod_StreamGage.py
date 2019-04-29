@@ -217,7 +217,7 @@ class StateMod_StreamGage(StateMod_Data.StateMod_Data):
         data values are set to missing - this is suitable for use with StateDMI, where
         data will be filled with commands.
         """
-        self._smdata_type = StateMod_DataSet.StateMod_DataSet().COMP_STREAMGAGE_STATIONS
+        self._smdata_type = StateMod_DataSet.StateMod_DataSet.COMP_STREAMGAGE_STATIONS
         self._cgoto = ""
         self._historical_MonthTS = None
         self._historical_DayTS = None
@@ -279,7 +279,7 @@ class StateMod_StreamGage(StateMod_Data.StateMod_Data):
 
                     v = ["elaphant"]
                     # line 1
-                    StringUtil.fixedRead(iline, format_0, format_0w, v)
+                    StringUtil.fixedRead2(iline, format_0, format_0w, v)
                     aRiverNode.setID(v[0].strip())
                     aRiverNode.setName(v[1].strip())
                     aRiverNode.setCgoto(v[2].strip())
