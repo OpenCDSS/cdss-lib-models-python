@@ -88,6 +88,7 @@
 
 import logging
 import os
+import time
 
 from RTi.TS.DayTS import DayTS
 from RTi.TS.MonthTS import MonthTS
@@ -96,6 +97,7 @@ from RTi.TS.TSUtil import TSUtil
 from RTi.Util.IO.IOUtil import IOUtil
 from RTi.Util.String.StringUtil import StringUtil
 from RTi.Util.Time.DateTime import DateTime
+from RTi.Util.Time.StopWatch import StopWatch
 from RTi.Util.Time.TimeInterval import TimeInterval
 from RTi.Util.Time.TimeUtil import TimeUtil
 from RTi.Util.Time.YearType import YearType
@@ -262,6 +264,7 @@ class StateMod_TS(object):
         :return: a list of time series if successful, null if not. The calling code is responsible
         for freeing the memory for the time series.
         """
+        #start = time.time()
         logger = logging.getLogger("StateMod")
         dl = 40
         i = int()
@@ -564,9 +567,7 @@ class StateMod_TS(object):
                             id = v[1].strip()
 
                     # We are still establishing the list of stations in file
-                    if ((fileInterval == TimeInterval.DAY) and (current_year == init_year) and
-                        (current_month == init_month)) or ((fileInterval == TimeInterval.MONTH) and
-                        (current_year == init_year)):
+                    if ((fileInterval == TimeInterval.DAY) and (current_year == init_year) and (current_month == init_month)) or ((fileInterval == TimeInterval.MONTH) and (current_year == init_year)):
                         if req_id == None:
                             # Create a new time series...
                             if fileInterval == TimeInterval.DAY:
@@ -688,6 +689,8 @@ class StateMod_TS(object):
                             else:
                                 date.addMonth(1)
                     currentTSindex+=1
+                # print("time end: " + str(time.time() - start))
+                break
         except Exception as e:
             message = ("Error reading file near line " + str(line_count) + " header indicates interval " +
                        fileIntervalString + ", period " + str(date1_header) + " to " + str(date2_header) +
