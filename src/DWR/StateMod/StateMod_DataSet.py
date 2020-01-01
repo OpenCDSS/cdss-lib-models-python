@@ -2,11 +2,11 @@
 
 # NoticeStart
 #
-# CDSS Models Java Library
-# CDSS Models Java Library is a part of Colorado's Decision Support Systems (CDSS)
+# CDSS Models Python Library
+# CDSS Models Python Library is a part of Colorado's Decision Support Systems (CDSS)
 # Copyright (C) 1994-2019 Colorado Department of Natural Resources
 #
-# CDSS Models Java Library is free software:  you can redistribute it and/or modify
+# CDSS Models Python Library is free software:  you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
 #     the Free Software Foundation, either version 3 of the License, or
 #     (at your option) any later version.
@@ -17,7 +17,7 @@
 #     GNU General Public License for more details.
 #
 #     You should have received a copy of the GNU General Public License
-#     along with CDSS Models Java Library.  If not, see <https://www.gnu.org/licenses/>.
+#     along with CDSS Models Python Library.  If not, see <https://www.gnu.org/licenses/>.
 #
 # NoticeEnd
 
@@ -82,13 +82,16 @@ class StateMod_DataSet(DataSet):
     TYPE_UNKNOWN = 0
     NAME_UNKNOWN = "Unknown"
 
+    # The following should be sequential from 0 because they have lookup position in DataSet arrays.
+    #"""
+    
     # Use for initialization, if needed.
     COMP_UNKNOWN = -1
     # Used when defining other nodes in the network, via the GUI.
     COMP_OTHER_NODE = -5
 
-    # The following should be sequential from 0 because they have lookup position in DataSet arrays.
-    #
+    # The following is now defined in StateMod_DataSetComponentType enumeration
+    
     # Some of the following values are for sub-components (e.g., delay table assignments for diversions).
     # These are typically one-to-many data items that are managed with a component but may need to be displayed
     # separately. The sub-components have numbers that are the main component*100 + N. These values are
@@ -193,10 +196,11 @@ class StateMod_DataSet(DataSet):
 
     COMP_GEOVIEW_GROUP = 73
     COMP_GEOVIEW = 74
+    #"""
 
     # The data set component names, including the component groups. Subcomponent
     # names are defined after this array and are currently treated as special cases.
-    __component_names = [
+    component_names = [
         "Control Data",
         "Response",
         "Control",
@@ -289,22 +293,22 @@ class StateMod_DataSet(DataSet):
         "GeoView Project"
     ]
 
-    # Subcomponent names used with lookupComponenetName(). These are special cases for labels
+    # Subcomponent names used with lookup_component_name(). These are special cases for labels
     # and displays but the data are managed with a component listed above. Make private to force
     # handling through lookup methods.
-    __COMPNAME_DIVERSION_STATION_DELAY_TABLES = "Diversion Station Delay Table Assignment"
-    __COMPNAME_DIVERSION_STATION_COLLECTIONS = "Diversion Station Collection Definitions"
-    __COMPNAME_RESERVOIR_STATION_ACCOUNTS = "Reservoir Station Accounts"
-    __COMPNAME_RESERVOIR_STATION_PRECIP_STATIONS = "Reservoir Station Precipitation Stations"
-    __COMPNAME_RESERVOIR_STATION_EVAP_STATIONS = "Reservoir Station Evaporation Stations"
-    __COMPNAME_RESERVOIR_STATION_CURVE = "Reservoir Station Content/Area/Seepage"
-    __COMPNAME_RESERVOIR_STATION_COLLECTIONS = "Reservoir Station Collection Definitions"
-    __COMPNAME_WELL_STATION_DELAY_TABLES = "Well Station Delay Table Assignment"
-    __COMPNAME_WELL_STATION_DEPLETION_TABLES = "Well Station Depletion Table Assignment"
-    __COMPNAME_WELL_STATION_COLLECTIONS = "Well Station Collection Definitions"
+    COMPNAME_DIVERSION_STATION_DELAY_TABLES = "Diversion Station Delay Table Assignment"
+    COMPNAME_DIVERSION_STATION_COLLECTIONS = "Diversion Station Collection Definitions"
+    COMPNAME_RESERVOIR_STATION_ACCOUNTS = "Reservoir Station Accounts"
+    COMPNAME_RESERVOIR_STATION_PRECIP_STATIONS = "Reservoir Station Precipitation Stations"
+    COMPNAME_RESERVOIR_STATION_EVAP_STATIONS = "Reservoir Station Evaporation Stations"
+    COMPNAME_RESERVOIR_STATION_CURVE = "Reservoir Station Content/Area/Seepage"
+    COMPNAME_RESERVOIR_STATION_COLLECTIONS = "Reservoir Station Collection Definitions"
+    COMPNAME_WELL_STATION_DELAY_TABLES = "Well Station Delay Table Assignment"
+    COMPNAME_WELL_STATION_DEPLETION_TABLES = "Well Station Depletion Table Assignment"
+    COMPNAME_WELL_STATION_COLLECTIONS = "Well Station Collection Definitions"
 
     # List of all the components, by number (type).
-    __component_types = [
+    component_types = [
         COMP_CONTROL_GROUP,
         COMP_RESPONSE,
         COMP_CONTROL,
@@ -399,7 +403,7 @@ class StateMod_DataSet(DataSet):
 
     # This array indicates the default file extension to use with each component.
     # These extensions can be used in file choosers.
-    __component_file_extensions = [
+    component_file_extensions = [
         "Control Group",
         "rsp",
         "ctl",
@@ -492,7 +496,10 @@ class StateMod_DataSet(DataSet):
         "gvp"
     ]
 
-    __statemod_file_properties = [
+    # This array indicates the StateMod response file property name to use with each
+    # component.  The group names are suitable for comments (put a # in front when
+    # writing the response file).  Any value that is a blank string should NOT be written to the StateMod file.
+    statemod_file_properties = [
         "",  # "Control Data",
         "Response",
         "Control",
@@ -586,7 +593,7 @@ class StateMod_DataSet(DataSet):
     ]
 
     # Array indicating which components are groups.
-    __component_groups = [
+    component_groups = [
         COMP_CONTROL_GROUP,
         COMP_CONSUMPTIVE_USE_GROUP,
         COMP_STREAMGAGE_GROUP,
@@ -608,7 +615,7 @@ class StateMod_DataSet(DataSet):
     # Array indicating the primary components within each component group. The primary components are used to
     # get the list of identifiers for displays and processing. The number of values should agree with the list
     # above.
-    __component_group_primaries = [
+    component_group_primaries = [
         COMP_RESPONSE,  # COMP_CONTROL_GROUP
         COMP_STATECU_STRUCTURE,  # COMP_CONSUMPTIVE_USE_GROUP
         COMP_STREAMGAGE_STATIONS,  # COMP_STREAMGAGE_GROUP
@@ -628,7 +635,7 @@ class StateMod_DataSet(DataSet):
     ]
 
     # Array indicating the groups for each component.
-    __component_group_assignments = [
+    component_group_assignments = [
         COMP_CONTROL_GROUP,
         COMP_CONTROL_GROUP,
         COMP_CONTROL_GROUP,
@@ -727,7 +734,7 @@ class StateMod_DataSet(DataSet):
     # is known (e.g., because reading from a response file), then the following array
     # can be used to look up the data type for the time series. Components that are not
     # time series have blank strings for data types.
-    __component_ts_data_types = [
+    component_ts_data_types = [
         "",  # "Control Data",
         "",  # "Response",
         "",  # "Control",
@@ -820,7 +827,11 @@ class StateMod_DataSet(DataSet):
         "",  # "Spatial Data",
         ""  # "GeoView Project"
     ]
-    __component_ts_data_intervals = [
+
+    # The following array assigns the time series data intervals for use with time
+    # series.  This information is important because the data types themselves may
+    # not be unique and the interval must be examined
+    component_ts_data_intervals = [
         TimeInterval.UNKNOWN,  # "Control Data",
         TimeInterval.UNKNOWN,  # "Response",
         TimeInterval.UNKNOWN,  # "Control",
@@ -917,7 +928,7 @@ class StateMod_DataSet(DataSet):
     # These can be used when creating new time series. If the data component is known (e.g., because
     # reading them from a response file), then the following array can be used to look up the data units
     # for the time series. Components that are not time series have blank strings for data units.
-    __component_ts_data_units = [
+    component_ts_data_units = [
         "",  # "Control Data",
         "",  # "Response",
         "",  # "Control",
@@ -1011,331 +1022,335 @@ class StateMod_DataSet(DataSet):
     ]
 
     def __init__(self, type=None):
-        super().__init__(StateMod_DataSet.__component_types, StateMod_DataSet.__component_names,
-                         StateMod_DataSet.__component_groups, StateMod_DataSet.__component_group_assignments,
-                         StateMod_DataSet.__component_group_primaries)
+        """
+        Construct a dataset.
+        :param type:  Dataset type, currently unused.
+        """
+        super().__init__(StateMod_DataSet.component_types, StateMod_DataSet.component_names,
+                         StateMod_DataSet.component_groups, StateMod_DataSet.component_group_assignments,
+                         StateMod_DataSet.component_group_primaries)
 
         self.WAIT = 0
         self.READY = 1
 
-        self.__processListeners = None
+        self.process_listeners = None
 
         # Indicates whether time series are read when reading the data set.  This was put in place when software
         # performance was slow but generally now it is not an issue.  Leave in for some period but phase out if
         # performance is not an issue.
-        self.__readTimeSeries = True
+        self.read_time_series = True
 
         # String indicating blank file name - allowed to be a duplicate.
         self.BLANK_FILE_NAME = ""
 
         # Appended to some daily time series data types to indicate an estimated time series.
-        self.__ESTIMATED = "Estimated"
+        self.ESTIMATED = "Estimated"
 
         # List of unknown file propery names in the *.rsp. These are properties not understood by
         # the code but will need to be retained when writing the *.rsp to keep it whole.
         # This list WILL include special properties like StateModExecutable that are used by the GUI.
-        self.__unhandledResponseFileProperties = PropList("Unhandled response file properties.")
+        self.unhandled_response_file_properties = PropList("Unhandled response file properties.")
 
         # Heading for output
-        self.__heading1 = ""
+        self.heading1 = ""
 
         # Heading for output
-        self.__heading2 = ""
+        self.heading2 = ""
 
         # Starting year of the simulation. Must be defined.
-        self.__iystr = StateMod_Util.MISSING_INT
+        self.iystr = StateMod_Util.MISSING_INT
 
         # Ending year of simulation. Must be defined.
-        self.__iyend = StateMod_Util.MISSING_INT
+        self.iyend = StateMod_Util.MISSING_INT
 
         # Switch for output untis. Default is ACFT.
-        self.__iresop = 2
+        self.iresop = 2
 
         # Monthly or avg monthly evap. Default to monthly.
-        self.__moneva = 0
+        self.moneva = 0
 
         # Monthly or avg monthly evap. Default to total.
-        self.__iopflo = 1
+        self.iopflo = 1
 
         # Number of precipitation stations - should be set when the time series are read -
         # this will be phased out in the future.
-        self.__numpre = 0
+        self.numpre = 0
 
         # Number of evaporation stations - should be set when the time series are read -
         # this will be phased out in the future.
-        self.__numeva = 0
+        self.numeva = 0
 
         # Max number entries in delay pattern.  Default is variable number as percents.
         # The following defaults assume normal operation...
-        self.__interv = -1
+        self.interv = -1
 
         # Factor, CFS to AF/D
-        self.__factor = 1.9835
+        self.factor = 1.9835
 
         # Divisor for streamflow data units.
-        self.__rfacto = 1.9835
+        self.rfacto = 1.9835
 
         # Divisor for diversion data units.
-        self.__dfacto = 1.9835
+        self.dfacto = 1.9835
 
         # Divisor for instream flow data units.
-        self.__ffacto = 1.9835
+        self.ffacto = 1.9835
 
         # Factor, reservoir content data to AF.
-        self.__cfacto = 1.0
+        self.cfacto = 1.0
 
         # Factor, evaporation data to Ft.
-        self.__efacto = 1.0
+        self.efacto = 1.0
 
         # Factor, precipitation data to Ft.
-        self.__pfacto = 1.0
+        self.pfacto = 1.0
 
         # Calendar/water/irrigation year - default to calendar.
-        self.__cyrl = "Calendar"
+        self.cyrl = "Calendar"
 
         # Switch for demand type. Default to historic approach.
-        self.__icondem = 1
+        self.icondem = 1
 
         # Switch for detailed output. Default is no detailed output.
-        self.__ichk = 0
+        self.ichk = 0
 
         # Switch for re-operation control.  Default is yes re-operate.
         # Unlike most StateMod options this uses 0 for do it.
-        self.__ireopx = 0
+        self.ireopx = 0
 
         # Switch for instream flow approach.  Default to use reaches and average monthly demands.
-        self.__ireach = 1
+        self.ireach = 1
 
         # Switch for detailed call data.  Default to no data.
-        self.__icall = 0
+        self.icall = 0
 
         # Default to not used.  Detailed call water right ID.
-        self.__ccall = ""
+        self.ccall = ""
 
         # Switch for daily analysis.  Default to no daily analysis.
-        self.__iday = 0
+        self.iday = 0
 
         # Switch for well analysis.  Default to no well analysis.
-        self.__iwell = 0
+        self.iwell = 0
 
         # Maximum recharge limit.  Default to not used.
-        self.__gwmaxrc = 0.0
+        self.gwmaxrc = 0.0
 
         # San Juan recovery program.  Default to no SJRIP.
-        self.__isjrip = 0
+        self.isjrip = 0
 
         # Is IPY data used?  Default to no data.
-        self.__itsfile = 0
+        self.itsfile = 0
 
         # IWR switch - default to no data.
-        self.__ieffmax = 0
+        self.ieffmax = 0
 
         # Sprinkler switch.  Default to no sprinkler data.
-        self.__isprink = 0
+        self.isprink = 0
 
         # Soil moisture accounting.  Default to not used.
-        self.__soild = 0.0
+        self.soild = 0.0
 
         # Significant figures for output.
-        self.__isig = 0
+        self.isig = 0
 
-        if type is None:
-            self.StateMod_DataSet_init(type)
+        # if type is None:
+        #    self.statemod_dataset_init(type)
         self.initialize()
 
-    def StateMod_DataSet_init(self, type):
+    def StateMod_DataSet(self):
         """
         Constructor.  Makes a blank data set.  Specific output files, by default, will
         use the output directory and base file name in output file names.
         :param type: Data set type (currently ignored).
         """
         try:
-            self.setDataSetType(type, True)
+            self.set_dataset_type(type, True)
         except Exception as e:
             pass  # not important
+        self.initialize()
 
-    def checkComponentVisibility(self):
+    def check_component_visibility(self):
         visibility = True
 
         # Check for daily data set (some may be reset in other checks below)...
 
-        if self.__iday != 0:
+        if self.iday != 0:
             visibility = True
         else:
             visibility = False
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMGAGE_NATURAL_FLOW_TS_DAILY)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_STREAMGAGE_NATURAL_FLOW_TS_DAILY)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DEMAND_TS_DAILY)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DEMAND_TS_DAILY)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_DAILY)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_DAILY)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_DEMAND_TS_DAILY)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_DEMAND_TS_DAILY)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_DAILY)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_DAILY)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DELAY_TABLE_DAILY_GROUP)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DELAY_TABLE_DAILY_GROUP)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DELAY_TABLES_DAILY)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DELAY_TABLES_DAILY)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_DAILY)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_DAILY)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_DAILY)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_DAILY)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DIVERSION_TS_DAILY)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DIVERSION_TS_DAILY)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_PUMPING_TS_DAILY)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_PUMPING_TS_DAILY)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_DAILY)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_DAILY)
         if comp is not None:
-            comp.setVisible(visibility)
+            comp.set_visible(visibility)
 
         # The stream estimate natural flow time series are always invisible because
         # they are shared with the stream gage natural time series files...
 
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_MONTHLY)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_MONTHLY)
         if comp is not None:
-            comp.setVisible(False)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_DAILY)
+            comp.set_visible(False)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_DAILY)
         if comp is not None:
-            comp.setVisible(False)
+            comp.set_visible(False)
 
         # Check well data set...
 
-        if self.hasWellData(False):
+        if self.has_well_data(False):
             visiblity = True
         else:
             visibility = False
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_GROUP)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_GROUP)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_STATIONS)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_STATIONS)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_RIGHTS)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_RIGHTS)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_DEMAND_TS_MONTHLY)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_DEMAND_TS_MONTHLY)
         if comp is not None:
-            comp.setVisible(visibility)
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_PUMPING_TS_MONTHLY)
+            comp.set_visible(visibility)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_PUMPING_TS_MONTHLY)
         if comp is not None:
-            comp.setVisible(visibility)
-        if self.__iday != 0:  # Else checked above
-            comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_DEMAND_TS_DAILY)
+            comp.set_visible(visibility)
+        if self.iday != 0:  # Else checked above
+            comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_DEMAND_TS_DAILY)
             if comp is not None:
-                comp.setVisible(visibility)
-            comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_PUMPING_TS_DAILY)
+                comp.set_visible(visibility)
+            comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_PUMPING_TS_DAILY)
             if comp is not None:
-                comp.setVisible(visibility)
+                comp.set_visible(visibility)
 
         # Check instream demand flag (component is in the instream flow group)...
 
-        if (self.__ireach == 2) or (self.__ireach == 3):
+        if (self.ireach == 2) or (self.ireach == 3):
             visibility = True
         else:
             visibility = False
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_MONTHLY)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_MONTHLY)
         if comp is not None:
-            comp.setVisible(visibility)
+            comp.set_visible(visibility)
 
         # Check SJRIP flag...
 
-        if self.__isjrip != 0:
+        if self.isjrip != 0:
             visiblity = True
         else:
             visibility = False
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_SANJUAN_RIP)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_SANJUAN_RIP)
         if comp is not None:
-            comp.setVisible(visibility)
+            comp.set_visible(visibility)
 
         # Check irrigation practice flag (component is in the diversion group)...
-        if self.__itsfile != 0:
+        if self.itsfile != 0:
             visibility = True
         else:
             visibility = False
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_IRRIGATION_PRACTICE_TS_YEARLY)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_IRRIGATION_PRACTICE_TS_YEARLY)
         if comp is not None:
-            comp.setVisible(visibility)
+            comp.set_visible(visibility)
 
         # Check variable efficiency flag (component is in the diversions group)...
 
-        if self.__ieffmax != 0:
+        if self.ieffmax != 0:
             visibility = True
         else:
             visibility = False
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_MONTHLY)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_MONTHLY)
         if comp is not None:
-            comp.setVisible(visibility)
-        if self.__iday != 0:  # Else already check above
-            comp = self.getComponentForComponentType(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_DAILY)
+            comp.set_visible(visibility)
+        if self.iday != 0:  # Else already check above
+            comp = self.get_component_for_component_type(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_DAILY)
             if comp is not None:
-                comp.setVisible(visibility)
+                comp.set_visible(visibility)
 
         # Check the soil moisture flag (component is in the diversion group)...
-        if self.__soild != 0.0:
+        if self.soild != 0.0:
             visibility = True
         else:
             visibility = False
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STATECU_STRUCTURE)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_STATECU_STRUCTURE)
         if comp is not None:
-            comp.setVisible(visibility)
+            comp.set_visible(visibility)
 
         # Hide the network (Graphical) file until it is fully implemented...
 
-        comp = self.getComponentForComponentType(StateMod_DataSet.COMP_NETWORK)
+        comp = self.get_component_for_component_type(StateMod_DataSet.COMP_NETWORK)
         if comp is not None:
-            comp.setVisible(True)
+            comp.set_visible(True)
 
-
-    def getDataFilePathAbsolute(self, comp):
+    def get_data_file_path_absolute(self, comp):
         """
         Determine the full path to a component data file, including accounting for the
         working directory.  If the file is already an absolute path, the same value is
         returned.  Otherwise, the data set directory is prepended to the component data
-        file name (which may be relative to the data set directory) and then calls IOUtil.getPathUsingWorkingDir().
+        file name (which may be relative to the data set directory) and then calls IOUtil.get_path_using_working_dir().
         :param comp: Data set component.
         :return: Full path to the data file (absolute), using the working directory.
         """
         file = comp.getDataFileName()
-        if(os.path.isabs(file)):
+        if os.path.isabs(file):
             return file
         else:
-            return IOUtil.getPathUsingWorkingDir(str(self.getDataSetDirectory() + os.path.sep + file))
+            return IOUtil.get_path_using_working_dir(str(self.get_dataset_directory() + os.path.sep + file))
 
-    def getDataFilePathAbsoluteFromString(self, file):
+    def get_data_file_path_absolute_from_string(self, file):
         """
         Determine the full path to a component data file, including accounting for the
         working directory.  If the file is already an absolute path, the same value is
         returned.  Otherwise, the data set directory is prepended to the component data
-        file name (which may be relative to the data set directory) and then calls IOUtil.getPathUsingWorkingDir().
+        file name (which may be relative to the data set directory) and then calls IOUtil.get_path_using_working_dir().
         :param file: File name (e.g. from component getFileName())
         :return: Full path to the data file (absolute), using the working directory.
         """
         if os.path.isabs(file):
             return file
         else:
-            return IOUtil.getPathUsingWorkingDir(str(self.getDataSetDirectory() + os.path.sep + file))
+            return IOUtil.get_path_using_working_dir(str(self.get_dataset_directory() + os.path.sep + file))
 
-    def getUnhandledResponseFileProperties(self):
+    def get_unhandled_response_file_properties(self):
         """
         Return the list of unhandled response file properties. These are entries in the *rsp file that the
         code does not specifically handle, such as new files or unimplemented files.
         :return: properties from the response file that are not explicitly handled
         """
-        return self.__unhandledResponseFileProperties
+        return self.unhandled_response_file_properties
 
-    def hasSanJuanData(self, is_active):
+    def has_sanjuan_data(self, is_active):
         """
         Indicate whether the data set has San Juan Recovery data (isjrip not missing and isjrip not equal 0).
         Use this method instead of checking isjrip directly to simplify logic and allow
@@ -1346,20 +1361,20 @@ class StateMod_DataSet(DataSet):
         and isjrip != 0).  Return false if San Juan Recovery data are not used.
         """
         if is_active:
-            if self.__isjrip == 1:
+            if self.isjrip == 1:
                 # San Juan Recovery data are included in the data set and are used...
                 return True
             else:
                 # San Juan Recovery data may or may not be included in the data set but are not used...
                 return False
-        elif not StateMod_Util.isMissing(self.__isjrip) and (self.__isjrip != 0):
-            # Data are sepcified in the data set but are not used...
+        elif not StateMod_Util.is_missing(self.isjrip) and (self.isjrip != 0):
+            # Data are specified in the data set but are not used...
             return True
         else:
             # San Juan Recovery data are not included...
             return False
 
-    def hasWellData(self, is_active):
+    def has_well_data(self, is_active):
         """
         Indicate whether the data set has well data (iwell not missing and iwell not equal to 0).
         Use this method instead of checking iwell directly to simplify logic and allow
@@ -1370,13 +1385,13 @@ class StateMod_DataSet(DataSet):
         (iwell = 1)
         """
         if is_active:
-            if self.__iwell == 1:
+            if self.iwell == 1:
                 # Well data are included in the data set and are used...
                 return True
             else:
                 # Well data may or may not be included in the data set but are not used...
                 return False
-        elif not StateMod_Util.isMissing(self.__iwell) and (self.__iwell != 0):
+        elif not StateMod_Util.is_missing(self.iwell) and (self.iwell != 0):
             return True
         else:
             # Well data are not included...
@@ -1389,9 +1404,8 @@ class StateMod_DataSet(DataSet):
         data (e.g., empty lists are assigned).  Also initialize the control data to reasonable values.
         """
 
-        routine = "StateMod_DataSet.initialize"
         # Initialize the control data
-        self.initializeControlData()
+        self.initialize_control_data()
 
         #  Always add all the components to the data set because StateMod does
         #  not really differentiate between data set types.  Instead, control
@@ -1408,292 +1422,292 @@ class StateMod_DataSet(DataSet):
         #  hasData() or similar to check.
         try:
             comp = DataSetComponent(self, StateMod_DataSet.COMP_CONTROL_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_RESPONSE)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, self.COMP_CONTROL)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, self.COMP_OUTPUT_REQUEST)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, self.COMP_REACH_DATA)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_CONSUMPTIVE_USE_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_STATECU_STRUCTURE)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_IRRIGATION_PRACTICE_TS_YEARLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_STREAMGAGE_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_STREAMGAGE_STATIONS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_STREAMGAGE_NATURAL_FLOW_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_STREAMGAGE_NATURAL_FLOW_TS_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_DELAY_TABLE_MONTHLY_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_DELAY_TABLES_MONTHLY)
-            subcomp.setData([])
+            subcomp.set_data([])
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_DELAY_TABLE_DAILY_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
-            comp.addComponent(subcomp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_DELAY_TABLES_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_DIVERSION_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_DIVERSION_STATIONS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_DIVERSION_RIGHTS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_DIVERSION_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_DIVERSION_TS_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_DEMAND_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_DEMAND_TS_OVERRIDE_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_DEMAND_TS_AVERAGE_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_DEMAND_TS_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_PRECIPITATION_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_PRECIPITATION_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_PRECIPITATION_TS_YEARLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_EVAPORATION_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_EVAPORATION_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_EVAPORATION_TS_YEARLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_RESERVOIR_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_RESERVOIR_STATIONS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_RESERVOIR_RIGHTS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_RESERVOIR_RETURN)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_INSTREAM_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_INSTREAM_STATIONS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_INSTREAM_RIGHTS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_AVERAGE_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_WELL_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_WELL_STATIONS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_WELL_RIGHTS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_WELL_PUMPING_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_WELL_PUMPING_TS_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_WELL_DEMAND_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_WELL_DEMAND_TS_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_PLAN_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_PLANS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_PLAN_WELL_AUGMENTATION)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_PLAN_RETURN)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_STREAMESTIMATE_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_STREAMESTIMATE_STATIONS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_STREAMESTIMATE_COEFFICIENTS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_MONTHLY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_RIVER_NETWORK_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_RIVER_NETWORK)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_NETWORK)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_OPERATION_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_OPERATION_RIGHTS)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_DOWNSTREAM_CALL_TS_DAILY)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_SANJUAN_RIP)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_RIO_GRANDE_SPILL)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
 
             comp = DataSetComponent(self, StateMod_DataSet.COMP_GEOVIEW_GROUP)
-            comp.setListSource(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
-            self.addComponent(comp)
+            comp.set_list_source(DataSetComponent.LIST_SOURCE_PRIMARY_COMPONENT)
+            self.add_component(comp)
             subcomp = DataSetComponent(self, StateMod_DataSet.COMP_GEOVIEW)
-            subcomp.setData([])
-            comp.addComponent(subcomp)
+            subcomp.set_data([])
+            comp.add_component(subcomp)
         except Exception as e:
             # Should not happen...
             # Message.printWarning(2, routine, e)
             pass
 
-    def initializeControlData(self):
+    def initialize_control_data(self):
         """
         Initialize the control data values to reasonable defaults.
         """
-        self.__heading1 = ""
-        self.__heading2 = ""
-        self.__iystr = StateMod_Util.MISSING_INT  # Start year of simulation
-        self.__iyend = StateMod_Util.MISSING_INT
-        self.__iresop = 2  # Switch for output units (default is ACFT for all)
-        self.__moneva = 0  # Monthly or avg monthly evap. Default to total.
-        self.__iopflo = 1  # Total or gains streamflow. Default to total.
-        self.__numpre = 0  # Number of precipitation stations - set when the time series are read
+        self.heading1 = ""
+        self.heading2 = ""
+        self.iystr = StateMod_Util.MISSING_INT  # Start year of simulation
+        self.iyend = StateMod_Util.MISSING_INT
+        self.iresop = 2  # Switch for output units (default is ACFT for all)
+        self.moneva = 0  # Monthly or avg monthly evap. Default to total.
+        self.iopflo = 1  # Total or gains streamflow. Default to total.
+        self.numpre = 0  # Number of precipitation stations - set when the time series are read
         # this will be phased out in the future.
-        self.__numeva = 0  # Number of evaporation stations - set when the time series are read -
+        self.numeva = 0  # Number of evaporation stations - set when the time series are read -
         # this will be phased out in the future.
-        self.__interv = -1  # Max number entries in delay pattern. Default is variable number as percents.
-        self.__factor = 1.9835  # Factor, CFS to AF/D
-        self.__rfacto = 1.9835  # Divisor for streamflow data units.
-        self.__dfacto = 1.9835  # Divisor for diversion data units.
-        self.__ffacto = 1.9835  # Divisor for instream flow data units.
-        self.__cfacto = 1.0  # Factor, reservoir content data to AF.
-        self.__efacto = 1.0  # Factor, evaporation data to Ft.
-        self.__pfacto = 1.0  # Factor, precipitation data to Ft.
-        self.__cyrl = "Calendar"
-        self.__icondem = 1  # Switch for demand type. Default to historic approach.
-        self.__ichk = 0  # Switch for detailed output. Default is no detailed output.
-        self.__ireopx = 0  # Switch for re-operation control. Default is yes re-operate.
-        self.__ireach = 1  # Switch for instream flow approach.
+        self.interv = -1  # Max number entries in delay pattern. Default is variable number as percents.
+        self.factor = 1.9835  # Factor, CFS to AF/D
+        self.rfacto = 1.9835  # Divisor for streamflow data units.
+        self.dfacto = 1.9835  # Divisor for diversion data units.
+        self.ffacto = 1.9835  # Divisor for instream flow data units.
+        self.cfacto = 1.0  # Factor, reservoir content data to AF.
+        self.efacto = 1.0  # Factor, evaporation data to Ft.
+        self.pfacto = 1.0  # Factor, precipitation data to Ft.
+        self.cyrl = "Calendar"
+        self.icondem = 1  # Switch for demand type. Default to historic approach.
+        self.ichk = 0  # Switch for detailed output. Default is no detailed output.
+        self.ireopx = 0  # Switch for re-operation control. Default is yes re-operate.
+        self.ireach = 1  # Switch for instream flow approach.
         # Default to use reaches and average monthly demands.
-        self.__icall = 0  # Switch for detailed call data. Default to no data.
-        self.__ccall = ""  # Deatiled call water right ID. Default to not used.
-        self.__iday = 0  # Switch for daily analysis. Default to no daily analysis.
-        self.__iwell = 0  # Switch for well analysis. Default to no well analysis.
-        self.__gwmaxrc = 0.0  # Maximum rehcharge limit. Default to not used.
-        self.__isjrip = 0  # San Juan recovery program. Default to no SJRIP.
-        self.__itsfile = 0  # Is IPY data used? Default to no data.
-        self.__ieffmax = 0  # IWR switch - default to no data.
-        self.__isprink = 0  # Sprinkler switch. Default to no sprinkler data.
-        self.__soild = 0.0  # Soil moisture accounting. Default to not used.
-        self.__isig = 0  # Significant figures for output.
+        self.icall = 0  # Switch for detailed call data. Default to no data.
+        self.ccall = ""  # Deatiled call water right ID. Default to not used.
+        self.iday = 0  # Switch for daily analysis. Default to no daily analysis.
+        self.iwell = 0  # Switch for well analysis. Default to no well analysis.
+        self.gwmaxrc = 0.0  # Maximum rehcharge limit. Default to not used.
+        self.isjrip = 0  # San Juan recovery program. Default to no SJRIP.
+        self.itsfile = 0  # Is IPY data used? Default to no data.
+        self.ieffmax = 0  # IWR switch - default to no data.
+        self.isprink = 0  # Sprinkler switch. Default to no sprinkler data.
+        self.soild = 0.0  # Soil moisture accounting. Default to not used.
+        self.isig = 0  # Significant figures for output.
 
-    def lookupTimeSeriesDataType(self, comp_type):
+    def lookup_time_series_data_type(self, comp_type):
         """
         Determine the time series data type string for a component type.
         :param comp_type: Component type.
@@ -1702,9 +1716,9 @@ class StateMod_DataSet(DataSet):
         COMP_RESERVOIR_TARGET_TS_DAILY, each of which contain both the maximum and
         minimum time series.  For these components, add "Max" and "Min" to the returned values.
         """
-        return self.__component_ts_data_types[comp_type]
+        return self.component_ts_data_types[comp_type]
 
-    def readStateModFile(self, filename, readData, readTimeSeries, useGUI, parent):
+    def read_statemod_file(self, filename, read_data, read_time_series, use_gui, parent):
         """
         Read the StateMod response file and fill the current StateMod_DataSet object.
         The file MUST be a newer free-format response file.
@@ -1712,42 +1726,41 @@ class StateMod_DataSet(DataSet):
         :param filename: Name of the StateMod response file.  This must be the
         full path (e.g., from a JFileChooser, with a drive).  The working directory will
         be set to the directory of the response file.
-        :param readData: if true, then all the data for files in the response file are read, if false, only read
+        :param read_data: if true, then all the data for files in the response file are read, if false, only read
         the filenames from the response file but do not try to read the
         data from station, rights, time series, etc.  False is useful for testing I/O on the response file itself.
-        :param readTimeSeries: indicates whether the time series files should be read (this parameter was implemented
+        :param read_time_series: indicates whether the time series files should be read (this parameter was implemented
         when performance was slow and it made sense to avoid reading time series - this paramter may be phased out
-        because it is not generally how an issue to read the time series).  If readData=false, then time series
+        because it is not generally how an issue to read the time series).  If read_data=false, then time series
         will not be read in any case.
-        :param useGUI: If true, then interactive prompts will be used where necessary.
-        :param parent: The parent JFrame used to position warning dialogs if useGUI is true.
+        :param use_gui: If true, then interactive prompts will be used where necessary.
+        :param parent: The parent JFrame used to position warning dialogs if use_gui is true.
         """
-        print("Read StateMod File: ... in development ")
-        routine = "StateMod_DataSet.readStateModFiles"
-        logger = logging.getLogger("StateMod")
+        print("Read StateMod file: ... in development ")
+        logger = logging.getLogger(__name__)
 
-        if not readData:
-            readTimeSeries = False
+        if not read_data:
+            read_time_series = False
 
-        __readTimeSeries = readTimeSeries
+        self.read_time_series = read_time_series
 
         filenameParent = os.path.abspath(os.path.join(filename, os.pardir))
         filenameName = os.path.basename(filename)
 
-        self.setDataSetDirectory(filenameParent)
-        self.setDataSetFilename(filenameName)
+        self.set_dataset_directory(filenameParent)
+        self.set_dataset_filename(filenameName)
 
         # String printed at the end of warning messages
-        warningEndString = "\"."
-        if useGUI:
+        warning_end_string = "\"."
+        if use_gui:
             # This string is used if there are problems reading
-            warningEndString = "\"\nInteractive edits for file will be disabled."
+            warning_end_string = "\"\nInteractive edits for file will be disabled."
 
         # Check whether the response file is free format. If it is free
         # format then the file is read into a PropList below...
         # TODO @jurentie 04/16/2019 - work on isFreeFormatResponseFile()
 
-        IOUtil.setProgramWorkingDir(filenameParent)
+        IOUtil.set_program_working_dir(filenameParent)
 
         # The following sets the static reference to the current data set
         # which is then accessible by every data object which extends StateMod_Data.
@@ -1757,7 +1770,7 @@ class StateMod_DataSet(DataSet):
 
         # Set basic information about the response file component - only save
         # the file name - the data itself are stored in this data set object.
-        self.getComponentForComponentType(StateMod_DataSet.COMP_RESPONSE).setDataFileName(filenameParent)
+        self.get_component_for_component_type(StateMod_DataSet.COMP_RESPONSE).set_data_file_name(filenameParent)
 
         fn = ""
 
@@ -1767,17 +1780,17 @@ class StateMod_DataSet(DataSet):
         comp = None
 
         # Now start reading new scenario...
-        totalReadTime = StopWatch()
-        readTime = StopWatch()
+        total_read_time = StopWatch()
+        read_time = StopWatch()
 
-        logger.info("Reading all information from input directory: \"" + self.getDataSetDirectory())
+        logger.info("Reading all information from input directory: \"" + self.get_dataset_directory())
         logger.info ("Reading response file: \"" + filename + "\"")
 
-        totalReadTime.start()
+        total_read_time.start()
 
         response_props = PropList("Response")
-        response_props.setPersistentName(filename)
-        response_props.readPersistent()
+        response_props.set_persistent_name(filename)
+        response_props.read_persistent()
 
         try:
             # Try for all reads.
@@ -1791,1534 +1804,1599 @@ class StateMod_DataSet(DataSet):
             # Control file (.ctl)...
 
             try:
-                fn = response_props.getValue("Control")
+                fn = response_props.get_value("Control")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_CONTROL)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_CONTROL)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie read data...
-                # if (readData and (fn is not None)) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                #     readTime.clear()
-                #     readTime.start()
-                #     fn = self.getDataFilePathAbsoluteFromString(fn)
-                #     self.readStateModFile_Announce1(comp)
-                #     self.readStateModControlFile()
+                # if (read_data and (fn is not None)) and \
+                #          (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                #     read_time.clear()
+                #     read_time.start()
+                #     fn = self.get_data_file_path_absolute_from_string(fn)
+                #     self.read_statemod_file_announce1(comp)
+                #     self.read_statemod_control_file()
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
+                comp.set_dirty(False)
                 # Control does not have its own data file now so use the data set
-                comp.setData(self)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_data(self)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # River network file (.rin)...
 
             try:
-                fn = response_props.getValue("River_Network")
+                fn = response_props.get_value("River_Network")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RIVER_NETWORK)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_RIVER_NETWORK)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    comp.setData(StateMod_RiverNetworkNode.readStateModFile(fn))
+                if read_data and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    comp.set_data(StateMod_RiverNetworkNode.read_statemod_file(fn))
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Reservoir stations file (.res)...
 
             try:
-                fn = response_props.getValue("Reservoir_Station")
+                fn = response_props.get_value("Reservoir_Station")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RESERVOIR_STATIONS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_RESERVOIR_STATIONS)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Diversion stations file (.dds)...
 
             try:
-                fn = response_props.getValue("Diversion_Station")
+                fn = response_props.get_value("Diversion_Station")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DIVERSION_STATIONS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DIVERSION_STATIONS)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if (readData) and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn))):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    comp.setData(StateMod_Diversion.readStateModFile(fn))
+                if read_data and (fn is not None) and os.path.getsize(self.get_data_file_path_absolute_from_string(fn)):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    comp.set_data(StateMod_Diversion.read_statemod_file(fn))
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Stream gage stations file (.ris)...
 
             try:
-                fn = response_props.getValue("StreamGage_Station")
+                fn = response_props.get_value("StreamGage_Station")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMGAGE_STATIONS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_STREAMGAGE_STATIONS)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    comp.setData(StateMod_StreamGage.readStateModFile(fn))
+                if read_data and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    comp.set_data(StateMod_StreamGage.read_statemod_file(fn))
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
                 # TODO @jurentie 04/19/2019 - needs updating
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # If not a free-format data set with separate stream estimate station,
             # re-read the legacy stream station file because some stations will be stream estimate stations.
             # If free format, get the file name...
 
             try:
-                fn = response_props.getValue("StreamEstimate_Station")
+                fn = response_props.get_value("StreamEstimate_Station")
                 # Get from the stream gage component because Ray has not adopted a separate stream
                 # estimate file...
                 logger.info("Using StreamGage_Station for StreamEstimate_Station (no separate 2nd file).")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMGAGE_STATIONS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_STREAMGAGE_STATIONS)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Instream flow stations file (.ifs)...
 
             try:
-                fn = response_props.getValue("Instreamflow_Station")
+                fn = response_props.get_value("Instreamflow_Station")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_INSTREAM_STATIONS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_INSTREAM_STATIONS)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
+                comp.set_dirty(False)
                 # Control does not have its own data file now so use the data set
-                comp.setData(self)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_data(self)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Well stations..
 
             try:
-                fn = response_props.getValue("Well_Station")
+                fn = response_props.get_value("Well_Station")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_STATIONS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_STATIONS)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Plans...
 
             try:
-                fn = response_props.getValue("Plan_Data")
+                fn = response_props.get_value("Plan_Data")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_PLANS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_PLANS)
                 if comp is None:
                     logger.warning("Unable to look up plans component " + str(StateMod_DataSet.COMP_PLANS))
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Plan well augmentation (.plw)...
 
             try:
-                fn = response_props.getValue("Plan_Wells")
+                fn = response_props.get_value("Plan_Wells")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_PLAN_WELL_AUGMENTATION)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_PLAN_WELL_AUGMENTATION)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Plan return (.prf)...
 
             try:
-                fn = response_props.getValue("Plan_Return")
+                fn = response_props.get_value("Plan_Return")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_PLAN_RETURN)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_PLAN_RETURN)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Instream flow rights files (.ifr)...
 
             try:
-                fn = response_props.getValue("Instreamflow_Right")
+                fn = response_props.get_value("Instreamflow_Right")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_INSTREAM_RIGHTS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_INSTREAM_RIGHTS)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Reservoir rights file (.rer)...
 
             try:
-                fn = response_props.getValue("Reservoir_Right")
+                fn = response_props.get_value("Reservoir_Right")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RESERVOIR_RIGHTS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_RESERVOIR_RIGHTS)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Diversion rights file (.ddr)...
 
             try:
-                fn = response_props.getValue("Diversion_Right")
+                fn = response_props.get_value("Diversion_Right")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DIVERSION_RIGHTS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DIVERSION_RIGHTS)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    comp.setData(StateMod_DiversionRight.readStateModFile(fn))
+                if read_data and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    comp.set_data(StateMod_DiversionRight.read_statemod_file(fn))
                     logger.info("Connecting diversion rights to diversion stations")
-                    StateMod_Diversion.connectAllRights(
-                        self.getComponentForComponentType(StateMod_DataSet.COMP_DIVERSION_STATIONS).getData(),
+                    StateMod_Diversion.connect_all_rights(
+                        self.get_component_for_component_type(StateMod_DataSet.COMP_DIVERSION_STATIONS).getData(),
                         comp.getData()
                     )
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Operational rights file (.opr)...
 
             try:
-                fn = response_props.getValue("Operational_Right")
+                fn = response_props.get_value("Operational_Right")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_OPERATION_RIGHTS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_OPERATION_RIGHTS)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Well rights file (.wer)...
 
             try:
-                fn = response_props.getValue("Well_Right")
+                fn = response_props.get_value("Well_Right")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_RIGHTS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_RIGHTS)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             try:
-                fn = response_props.getValue("Precipitation_Monthly")
+                fn = response_props.get_value("Precipitation_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_PRECIPITATION_TS_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_PRECIPITATION_TS_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn) > 0)):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn) > 0)):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
-                    self.setNumpre(size)
+                    self.set_numpre(size)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_PRECIPITATION_TS_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_PRECIPITATION_TS_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Precipitation TS yearly file (.pra) - always read...
 
             try:
-                fn = response_props.getValue("Precipitation_Annual")
+                fn = response_props.get_value("Precipitation_Annual")
                 # Always set the file name...
                 logger.info("StateMod GUI does not yet handle annual precipitation data.")
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_PRECIPITATION_TS_YEARLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_PRECIPITATION_TS_YEARLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsolute(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
-                    self.setNumpre(size)
+                    self.set_numpre(size)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_PRECIPITATION_TS_YEARLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_PRECIPITATION_TS_YEARLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Evaporation time series file monthly (.eva) - always read...
 
             try:
-                fn = response_props.getValue("Evaporation_Monthly")
+                fn = response_props.get_value("Evaporation_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_EVAPORATION_TS_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_EVAPORATION_TS_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
-                    self.setNumeva(size)
+                    self.set_numeva(size)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_EVAPORATION_TS_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_EVAPORATION_TS_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Evaporation time series file yearly (.eva) - always read...
 
             try:
-                fn = response_props.getValue("Evaporation_Annual")
+                fn = response_props.get_value("Evaporation_Annual")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_EVAPORATION_TS_YEARLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_EVAPORATION_TS_YEARLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
-                    self.setNumeva(size)
+                    self.set_numeva(size)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_EVAPORATION_TS_YEARLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_EVAPORATION_TS_YEARLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Stream gage natural flow time series (.rim or .xbm) - always read...
             comp2 = None
             try:
-                fn = response_props.getValue("Stream_Base_Monthly")
+                fn = response_props.get_value("Stream_Base_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_MONTHLY)
+                comp = self.get_component_for_component_type(
+                    StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(self.COMP_STREAMGAGE_NATURAL_FLOW_TS_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           self.COMP_STREAMGAGE_NATURAL_FLOW_TS_MONTHLY))
+                    comp.set_data(v)
 
                     # The StreamGage and STreamEstimate groups share the same natural flow time series files...
 
-                    comp2 = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_MONTHLY)
-                    comp2.setDataFileName(comp.getDataFileName())
-                    comp2.setData(v)
+                    comp2 = self.get_component_for_component_type(
+                        StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_MONTHLY)
+                    comp2.set_data_file_name(comp.getDataFileName())
+                    comp2.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
+                comp.set_dirty(False)
                 # Control does not have its own data file now so use the data set
                 if comp2 is not None:
                     # Never read data above so no need to call the following
-                    comp2.setDirty( False )
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                    comp2.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Diversion direct flow demand time series (monthly) file (.ddm)...
 
             try:
-                fn = response_props.getValue("Diversion_Demand_Monthly")
+                fn = response_props.get_value("Diversion_Demand_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DEMAND_TS_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DEMAND_TS_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn))):
-                    readTime.clear()
-                    readTime.start()
-                    self.readStateModFile_Announce1(comp)
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn))):
+                    read_time.clear()
+                    read_time.start()
+                    self.read_statemod_file_announce1(comp)
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_DEMAND_TS_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(StateMod_DataSet.COMP_DEMAND_TS_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
+                comp.set_dirty(False)
                 # Control does not have its own data file now so use the data set
-                comp.setData(self)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_data(self)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Direct flow demand time series override (monthly) file (.ddo)...
 
             try:
-                fn = response_props.getValue("Diversion_DemandOverride_Monthly")
+                fn = response_props.get_value("Diversion_DemandOverride_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DEMAND_TS_OVERRIDE_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DEMAND_TS_OVERRIDE_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn))>0):
-                    readTime.clear()
-                    readTime.start()
-                    self.readStateModFile_Announce1(comp)
-                    fn = self.getDataFilePathAbsolute(fn)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    self.read_statemod_file_announce1(comp)
+                    fn = self.get_data_file_path_absolute(fn)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is not None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_DEMAND_TS_OVERRIDE_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_DEMAND_TS_OVERRIDE_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Direct flow demand time series average (monthly) file (.dda)...
 
             try:
-                fn = response_props.getValue("Diversion_Demand_AverageMonthly")
+                fn = response_props.get_value("Diversion_Demand_AverageMonthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DEMAND_TS_AVERAGE_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DEMAND_TS_AVERAGE_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    self.readStateModFile_Announce1(comp)
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    self.read_statemod_file_announce1(comp)
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is not None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_DEMAND_TS_AVERAGE_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_DEMAND_TS_AVERAGE_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Monthly instream flow demand...
 
             try:
-                fn = response_props.getValue("Instreamflow_Demand_Monthly")
+                fn = response_props.get_value("Instreamflow_Demand_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn))> 0):
-                    readTime.clear()
-                    readTime.start()
-                    self.readStateModFile_Announce1(comp)
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn))> 0):
+                    read_time.clear()
+                    read_time.start()
+                    self.read_statemod_file_announce1(comp)
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Instream demand time series (average monthly) file (.ifa)...
 
             try:
-                fn = response_props.getValue("Instreamflow_Demand_AverageMonthly")
+                fn = response_props.get_value("Instreamflow_Demand_AverageMonthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_AVERAGE_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_AVERAGE_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is not None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_AVERAGE_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_AVERAGE_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Well demand time series (monthly) file (.wem)...
 
             try:
-                fn = response_props.getValue("Well_Demand_Monthly")
+                fn = response_props.get_value("Well_Demand_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_DEMAND_TS_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_DEMAND_TS_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is not None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_WELL_DEMAND_TS_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_WELL_DEMAND_TS_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Delay file (monthly) file (.dly)
 
             try:
-                fn = response_props.getValue("DelayTable_Monthly")
+                fn = response_props.get_value("DelayTable_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DELAY_TABLES_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DELAY_TABLES_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie read data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Reservoir target time series (monthly) file (.tar)...
 
             try:
-                fn = response_props.getValue("Reservoir_Target_Monthly")
+                fn = response_props.get_value("Reservoir_Target_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
                         if (i % 2) == 0:
-                            v[i].setDataType(self.lookupTimeSeriesDataType(
+                            v[i].set_data_type(self.lookup_time_series_data_type(
                                 StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_MONTHLY) + "Min")
                         else:
-                            v[i].setDataType(self.lookupTimeSeriesDataType(
+                            v[i].set_data_type(self.lookup_time_series_data_type(
                                 StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_MONTHLY) + "Max")
-                    comp.setData(v)
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Reservoir return (.rrf)...
 
             try:
-                fn = response_props.getValue("Reservoir_Return")
+                fn = response_props.get_value("Reservoir_Return")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RESERVOIR_RETURN)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_RESERVOIR_RETURN)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and self.hasSanJuanData(False) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
+                if read_data and (fn is not None) and not self.has_sanjuan_data(False) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
                     logger.warning("Reading Rio Grande Spill file is not enabled.")
+                    self.read_statemod_file_announce1(comp)
+                    # comp.set_data( StateMod_ReturnFlow.read_statemod_file(fn,COMP_RESERVOIR_RETURN)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # TODO @jurentie 04/18/2019 - San Juan Sediment Recovery
 
             try:
-                fn = response_props.getValue("SanJuanRecovery")
+                fn = response_props.get_value("SanJuanRecovery")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_SANJUAN_RIP)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_SANJUAN_RIP)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                #readInputAnnounce1(comp)
-                if readData and (fn is not None) and self.hasSanJuanData(False) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
+                # readInputAnnounce1(comp)
+                if read_data and (fn is not None) and self.has_sanjuan_data(False) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
                     logger.warning("Do not know how to read the San Juan Recovery file.")
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                #self.readInputAnnounce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                # self.readInputAnnounce2(comp, read_time.get_seconds())
 
             # TODO @jurentie 04/18/2019 - Enable - Rio Grande Spill
 
             try:
-                fn = response_props.getValue("RioGrande_Spill_Monthly")
+                fn = response_props.get_value("RioGrande_Spill_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RIO_GRANDE_SPILL)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_RIO_GRANDE_SPILL)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                #readInputAnnounce1(comp)
-                if readData and (fn is not None) and self.hasSanJuanData(False) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
+                # readInputAnnounce1(comp)
+                if read_data and (fn is not None) and self.has_sanjuan_data(False) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
                     logger.warning("Reading Rio Grande Spill file is not enabled.")
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                #self.readInputAnnounce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                # self.readInputAnnounce2(comp, read_time.get_seconds())
 
             # Irrigation practice time series (tsp/ipy)...
 
             try:
-                fn = response_props.getValue("IrrigationPractice_Yearly")
+                fn = response_props.get_value("IrrigationPractice_Yearly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_IRRIGATION_PRACTICE_TS_YEARLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_IRRIGATION_PRACTICE_TS_YEARLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                # readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Irrigation water requirement (iwr) - monthly...
 
             try:
-                fn = response_props.getValue("ConsumptiveWaterRequirement_Monthly")
+                fn = response_props.get_value("ConsumptiveWaterRequirement_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_MONTHLY)
+                comp = self.get_component_for_component_type(
+                    StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # StateMod used to read PAR but the AWC is now in the StateCU STR file.
 
             try:
-                fn = response_props.getValue("StateCU_")
+                fn = response_props.get_value("StateCU_")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RESERVOIR_RETURN)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_RESERVOIR_RETURN)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Soil moisture (*.par) file no longer supported (print a warning)...
 
-            fn = response_props.getValue("SoilMoisture")
-            if fn is not None and (os.path.getsize(self.getDataFilePathAbsolute(fn)) > 0):
+            fn = response_props.get_value("SoilMoisture")
+            if fn is not None and (os.path.getsize(self.get_data_file_path_absolute(fn)) > 0):
                 logger.warning("StateCU soil moisture file - not supported - not reading \"" + fn + "\"")
 
             # Reservoir content time series (monthly) file (.eom)...
 
             try:
-                fn = response_props.getValue("Reservoir_Historic_Monthly")
+                fn = response_props.get_value("Reservoir_Historic_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Stream estimate coefficients file (.rib)...
 
             try:
-                fn = response_props.getValue("StreamEstimate_Coefficients")
+                fn = response_props.get_value("StreamEstimate_Coefficients")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMESTIMATE_COEFFICIENTS)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_STREAMESTIMATE_COEFFICIENTS)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Historical streamflow (monthly) file (.rih)...
 
             try:
-                fn = response_props.getValue("StreamGage_Historic_Monthly")
+                fn = response_props.get_value("StreamGage_Historic_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Diversion time series (historical monthly) file (.ddh)...
 
             try:
-                fn = response_props.getValue("Diversion_Historic_Monthly")
+                fn = response_props.get_value("Diversion_Historic_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DIVERSION_TS_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DIVERSION_TS_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    self.readStateModFile_Announce1(comp)
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    self.read_statemod_file_announce1(comp)
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_DIVERSION_TS_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_DIVERSION_TS_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Well historical pumping time series (monthly) file (.weh)...
 
             try:
-                fn = response_props.getValue("Well_Historic_Monthly")
+                fn = response_props.get_value("Well_Historic_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_PUMPING_TS_MONTHLY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_PUMPING_TS_MONTHLY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_WELL_PUMPING_TS_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_WELL_PUMPING_TS_MONTHLY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # GeoView Project file...
 
             try:
-                fn = response_props.getValue("GeographicInformation")
+                fn = response_props.get_value("GeographicInformation")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_GEOVIEW)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_GEOVIEW)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
-                if fn is not None and (os.path.getsize(self.getDataFilePathAbsolute(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsolute(fn)
-                    #readInputAnnounce1(comp)
+                    comp.set_data_file_name(fn)
+                if fn is not None and (os.path.getsize(self.get_data_file_path_absolute(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute(fn)
+                    # readInputAnnounce1(comp)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                #readInputAnnounce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                # readInputAnnounce2(comp, read_time.get_seconds())
                 # Read data and display when the GUI is shown - no read for data to be read if no GUI
 
             # TODO output control - this is usually read separately when running
             # reports, etc. Just read the line but do not read the file...
 
             try:
-                fn = response_props.getValue("OutputRequest")
+                fn = response_props.get_value("OutputRequest")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_OUTPUT_REQUEST)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_OUTPUT_REQUEST)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
-                #readInputAnnounce1(comp)
+                    comp.set_data_file_name(fn)
+                # readInputAnnounce1(comp)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                #readInputAnnounce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                # readInputAnnounce2(comp, read_time.get_seconds())
                 # Read data and display when the GUI is shown - no read for data to be read if no GUI
 
             # TODO Enable reach data file
 
             try:
-                fn = response_props.getValue("Reach_Data")
+                fn = response_props.get_value("Reach_Data")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_REACH_DATA)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_REACH_DATA)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                #readInputAnnounce1(comp, readTime.getSeconds())
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsolute(fn)) > 0):
+                # readInputAnnounce1(comp, read_time.get_seconds())
+                if read_data and (fn is not None) and (os.path.getsize(self.get_data_file_path_absolute(fn)) > 0):
                     logger.warning("Reach data file - not yet supported.")
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                #readInputAnnounce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                # readInputAnnounce2(comp, read_time.get_seconds())
 
             # Stream natural flow flow time series (daily) file (.rid)...
             # Always read if a daily set.
             try:
-                fn = response_props.getValue("Stream_Base_Daily")
+                fn = response_props.get_value("Stream_Base_Daily")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMGAGE_NATURAL_FLOW_TS_DAILY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_STREAMGAGE_NATURAL_FLOW_TS_DAILY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_STREAMGAGE_NATURAL_FLOW_TS_MONTHLY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_STREAMGAGE_NATURAL_FLOW_TS_MONTHLY))
+                    comp.set_data(v)
 
                     # The StreamGage and StreamEstimate groups share the same natural flow time series files...
 
-                    comp2 = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_DAILY)
-                    comp2.setDataFileName(comp.getDataFileName())
-                    comp2.setData(v)
+                    comp2 = self.get_component_for_component_type(
+                        StateMod_DataSet.COMP_STREAMESTIMATE_NATURAL_FLOW_TS_DAILY)
+                    comp2.set_data_file_name(comp.getDataFileName())
+                    comp2.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
+                comp.set_dirty(False)
                 if comp2 is not None:
                     # Never read data above so no need to call the following
-                    comp2.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                    comp2.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Direct diversion demand time series (daily) file (.ddd)...
 
             try:
-                fn = response_props.getValue("Diversion_Demand_Daily")
+                fn = response_props.get_value("Diversion_Demand_Daily")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DEMAND_TS_DAILY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DEMAND_TS_DAILY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_DEMAND_TS_DAILY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(StateMod_DataSet.COMP_DEMAND_TS_DAILY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Instream flow demand time series (daily) file (.ifd)...
 
             try:
-                fn = response_props.getValue("Instreamflow_Demand_Daily")
+                fn = response_props.get_value("Instreamflow_Demand_Daily")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_DAILY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_DAILY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_DAILY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_INSTREAM_DEMAND_TS_DAILY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Well demand time series (daily) file (.wed)...
 
             try:
-                fn = response_props.getValue("Well_Demand_Daily")
+                fn = response_props.get_value("Well_Demand_Daily")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_DEMAND_TS_DAILY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_DEMAND_TS_DAILY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_WELL_DEMAND_TS_DAILY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_WELL_DEMAND_TS_DAILY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Reservoir target time series (daily) file (.tad)...
 
             try:
-                fn = response_props.getValue("Reservoir_Target_Daily")
+                fn = response_props.get_value("Reservoir_Target_Daily")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_DAILY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_DAILY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        if (i%2) == 0:
-                            v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_DAILY) + "Min")
+                        if (i % 2) == 0:
+                            v[i].set_data_type(self.lookup_time_series_data_type(
+                                               StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_DAILY) + "Min")
                         else:
-                            v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_DAILY) + "Max")
-                    comp.setData(v)
+                            v[i].set_data_type(self.lookup_time_series_data_type(
+                                               StateMod_DataSet.COMP_RESERVOIR_TARGET_TS_DAILY) + "Max")
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Delay table (daily)...
 
             try:
-                fn = response_props.getValue("DelayTable_Daily")
+                fn = response_props.get_value("DelayTable_Daily")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DELAY_TABLES_DAILY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DELAY_TABLES_DAILY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Irrigation water requirement (.iwr) - daily...
 
             try:
-                fn = response_props.getValue("ConsumptiveWaterRequirement_Daily")
+                fn = response_props.get_value("ConsumptiveWaterRequirement_Daily")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_DAILY)
+                comp = self.get_component_for_component_type(
+                    StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_DAILY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_DAILY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_CONSUMPTIVE_WATER_REQUIREMENT_TS_DAILY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Streamflow historical time series (daily) file (.riy) - always read...
 
             try:
-                fn = response_props.getValue("StreamGage_Historic_Monthly")
+                fn = response_props.get_value("StreamGage_Historic_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_DAILY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_DAILY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
                         # Set this information because it is not in the StateMod time series file...
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_DAILY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_STREAMGAGE_HISTORICAL_TS_DAILY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Diversion (daily) time series (.ddd)...
 
             try:
-                fn = response_props.getValue("Diversion_Historic_Monthly")
+                fn = response_props.get_value("Diversion_Historic_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DIVERSION_TS_DAILY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DIVERSION_TS_DAILY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     # Set the data type because it is not in the StateMod file...
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_DIVERSION_TS_DAILY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(StateMod_DataSet.COMP_DIVERSION_TS_DAILY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Well pumping (daily) time series...
             try:
-                fn = response_props.getValue("Well_Historic_Monthly")
+                fn = response_props.get_value("Well_Historic_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_WELL_PUMPING_TS_DAILY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_WELL_PUMPING_TS_DAILY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_WELL_PUMPING_TS_DAILY))
-                    comp.setData(v)
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_WELL_PUMPING_TS_DAILY))
+                    comp.set_data(v)
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Daily reservoir content "eoy" ...
 
             try:
-                fn = response_props.getValue("Reservoir_Historic_Monthly")
+                fn = response_props.get_value("Reservoir_Historic_Monthly")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_DAILY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_DAILY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
-                if readData and self.__readTimeSeries and (fn is not None) and (os.path.getsize(self.getDataFilePathAbsoluteFromString(fn)) > 0):
-                    readTime.clear()
-                    readTime.start()
-                    fn = self.getDataFilePathAbsoluteFromString(fn)
-                    self.readStateModFile_Announce1(comp)
-                    v = StateMod_TS.readTimeSeriesList(fn, None, None, None, True)
+                if read_data and self.read_time_series and (fn is not None) and \
+                        (os.path.getsize(self.get_data_file_path_absolute_from_string(fn)) > 0):
+                    read_time.clear()
+                    read_time.start()
+                    fn = self.get_data_file_path_absolute_from_string(fn)
+                    self.read_statemod_file_announce1(comp)
+                    v = StateMod_TS.read_time_series_list(fn, None, None, None, True)
                     if v is None:
                         v = []
                     size = len(v)
                     for i in range(size):
-                        v[i].setDataType(self.lookupTimeSeriesDataType(StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_DAILY))
+                        v[i].set_data_type(self.lookup_time_series_data_type(
+                                           StateMod_DataSet.COMP_RESERVOIR_CONTENT_TS_DAILY))
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Downstream call (.cal)...
 
             try:
-                fn = response_props.getValue("Downstream_Call")
+                fn = response_props.get_value("Downstream_Call")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_DOWNSTREAM_CALL_TS_DAILY)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_DOWNSTREAM_CALL_TS_DAILY)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                #readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
 
             # Keep track of files/properties that are not explicitly handled in this class
             # These may be new files added to the model, old files being phased out, or simple properties.
-            unhandledResponseFileProperties = self.getUnhandledResponseFileProperties()
-            unhandledResponseFileProperties.clear()
-            for prop in response_props.getList():
-                fileKey = prop.getKey()
+            unhandled_response_file_properties = self.get_unhandled_response_file_properties()
+            unhandled_response_file_properties.clear()
+            for prop in response_props.get_list():
+                file_key = prop.get_key()
                 # See if the key is matched in the known StateMod file type keys...
                 found = False
-                for file in self.__statemod_file_properties:
-                    if fileKey == file:
+                for file in self.statemod_file_properties:
+                    if file_key == file:
                         found = True
                         break
                 if not found:
                     # The file property was not found so need to carry around as unknown
-                    logger.info("Unhandled response file property: " + prop.getKey() + " = " + prop.getValue())
-                    unhandledResponseFileProperties.set(prop)
+                    logger.info("Unhandled response file property: " + prop.get_key() + " = " + prop.get_value())
+                    unhandled_response_file_properties.set(prop)
 
-            logger.info("DataSet: \n" + self.toStringDefinitions())
+            logger.info("DataSet: \n" + self.to_string_definitions())
 
-            totalReadTime.stop()
-            logger.info("Total time to read StateMod files is " + "{:3f} ".format(totalReadTime.getSeconds()) +
-                         "seconds")
-            totalReadTime.start()
+            total_read_time.stop()
+            logger.info("Total time to read StateMod files is " + "{:3f} ".format(total_read_time.get_seconds()) +
+                        "seconds")
+            total_read_time.start()
 
             logger.info("Reading generalized network.")
 
             try:
-                fn = response_props.getValue("Network")
+                fn = response_props.get_value("Network")
                 # Always set the file name...
-                comp = self.getComponentForComponentType(StateMod_DataSet.COMP_NETWORK)
+                comp = self.get_component_for_component_type(StateMod_DataSet.COMP_NETWORK)
                 if comp is not None and fn is not None:
-                    comp.setDataFileName(fn)
+                    comp.set_data_file_name(fn)
                 # Read the data...
                 # TODO @jurentie 04/18/2019 - read the data
             except Exception as e:
-                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warningEndString +
+                logger.warning("Unexpected error reading control file:\n" + "\"" + fn + warning_end_string +
                                " See log file for more on error:" + str(e) + ")")
                 logger.warning(e)
-                comp.setErrorReadingInputFile(True)
+                comp.set_error_reading_input_file(True)
             finally:
-                comp.setDirty(False)
-                # readTime.stop()
-                self.readStateModFile_Announce2(comp, readTime.getSeconds())
+                comp.set_dirty(False)
+                # read_time.stop()
+                self.read_statemod_file_announce2(comp, read_time.get_seconds())
         except Exception as e:
             # Main catch for all reads
             message = "Unexpected error during read ( {} ) - please contact support.".format(e)
@@ -3328,19 +3406,19 @@ class StateMod_DataSet(DataSet):
             # Throw error
 
         # Set component visibility based on the control information...
-        self.checkComponentVisibility()
+        self.check_component_visibility()
 
-        totalReadTime.stop()
-        msg = "Total time to read all files is {:3f} seconds".format(totalReadTime.getSeconds())
+        total_read_time.stop()
+        msg = "Total time to read all files is {:3f} seconds".format(total_read_time.get_seconds())
         logger.info(msg)
-        #self.sendProcessListenerMessage(22, msg)
-        self.setDirty(StateMod_DataSet.COMP_CONTROL, False)
+        # self.sendProcessListenerMessage(22, msg)
+        self.set_dirty(StateMod_DataSet.COMP_CONTROL, False)
 
         print("things are going well...")
 
-    def readStateModFile_Announce1(self, comp):
+    def read_statemod_file_announce1(self, comp):
         """
-        This method is a helper routine to readStateModFile().  It calls
+        This method is a helper routine to read_statemod_file().  It calls
         Message.printStatus() with the message that a particular file is being read,
         including path.  Then it prints a similar, but shorter,
         message to the status bar.  If there is an error with the file (not specified,
@@ -3348,9 +3426,9 @@ class StateMod_DataSet(DataSet):
         files and therefore the same basic checks are done many times.
         :param comp: Data set component that is being read.
         """
-        logger = logging.getLogger("StateMod")
-        fn = self.getDataFilePathAbsolute(comp)
-        description = comp.getComponentName()
+        logger = logging.getLogger(__name__)
+        fn = self.get_data_file_path_absolute(comp)
+        description = comp.get_component_name()
 
         if (fn is None) or (len(fn) == 0):
             logger.warning(description + " file name unavailable")
@@ -3362,56 +3440,54 @@ class StateMod_DataSet(DataSet):
         logger.info(msg)
         # self.sendProcessListenerMessage( StateMod_GUIUtil.STATUS_READ_START, msg)
 
-
-    def readStateModFile_Announce2(self, comp, seconds):
+    def read_statemod_file_announce2(self, comp, seconds):
         """
-        This method is a helper routine to readStateModFile().  It calls
+        This method is a helper routine to read_statemod_file().  It calls
         Message.printStatus() with the message that a file has been read successively.
         Then it prints a similar, but shorter, message to the status bar.
         :param comp: Component being read.
         :param seconds: Number of seconds to read.
         """
-        logger = logging.getLogger("StateMod")
-        routine = "StateMod_DataSet.readStateModFile_Announce2"
-        fn = self.getDataFilePathAbsolute(comp)
-        description = comp.getComponentName()
+        logger = logging.getLogger(__name__)
+        fn = self.get_data_file_path_absolute(comp)
+        description = comp.get_component_name()
 
         # The status message is printed because process listeners may not be registered.
         msg = description + " data read from \"" + fn + "\" in " + str("{:3f}".format(seconds)) + " seconds"
         logger.info(msg)
 
-    def setNumeva(self, numeva):
+    def set_numeva(self, numeva):
         """
         Set number of evaporation stations.
         :param numeva: number of stations
         """
-        if numeva != self.__numeva:
-            self.__numeva = numeva
-            self.setDirty(StateMod_DataSet.COMP_CONTROL, True)
+        if numeva != self.numeva:
+            self.numeva = numeva
+            self.set_dirty(StateMod_DataSet.COMP_CONTROL, True)
 
-    def setNumpre(self, numpre):
+    def set_numpre(self, numpre):
         """
         Set number of precipition stations.
         :param numpre: number of stations
         """
-        if numpre != self.__numpre:
-            self.__numpre = numpre
-            self.setDirty(StateMod_DataSet.COMP_CONTROL, True)
+        if numpre != self.numpre:
+            self.numpre = numpre
+            self.set_dirty(StateMod_DataSet.COMP_CONTROL, True)
 
-    def toStringDefinitions(self):
+    def to_string_definitions(self):
         """
         Return a string representation of the data set definition information, useful for troubleshooting
         """
         nl = os.path.sep
-        str = ""
-        for i in range(len(self.__component_names)):
-            comp = self.getComponentForComponentType(i)
-            str += "[{}]".format(i) + " Name=\"" + self.__component_names[i]
-            str += "\" Group={}".format(self.__component_group_assignments[i])
-            str += " RspProperty=\"" + self.__statemod_file_properties[i]
-            str += "\" Filename=\"" + comp.getDataFileName()
-            str += "\" Ext=\"" + self.__component_file_extensions[i]
-            str += "\" TSType=\"" + self.__component_ts_data_types[i]
-            str += "\" TSInt={}".format(self.__component_ts_data_intervals[i])
-            str += " TSUnits=\"" + self.__component_ts_data_units[i] + "\"\n"
-        return str
+        s = ""
+        for i in range(len(self.component_names)):
+            comp = self.get_component_for_component_type(i)
+            s += "[{}]".format(i) + " Name=\"" + self.component_names[i]
+            s += "\" Group={}".format(self.component_group_assignments[i])
+            s += " RspProperty=\"" + self.statemod_file_properties[i]
+            s += "\" Filename=\"" + comp.getDataFileName()
+            s += "\" Ext=\"" + self.component_file_extensions[i]
+            s += "\" TSType=\"" + self.component_ts_data_types[i]
+            s += "\" TSInt={}".format(self.component_ts_data_intervals[i])
+            s += " TSUnits=\"" + self.component_ts_data_units[i] + "\"\n"
+        return s
