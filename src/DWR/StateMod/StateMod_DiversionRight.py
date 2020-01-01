@@ -1,4 +1,4 @@
-# StateMod_Diversion - class for diversion station
+# StateMod_DiversionRight - class for diversion station rights
 
 # NoticeStart
 #
@@ -21,125 +21,50 @@
 #
 # NoticeEnd
 
-#------------------------------------------------------------------------------
-# StateMod_DiversionRight - Derived from SMData class
-#------------------------------------------------------------------------------
-# Copyright:	See the COPYRIGHT file.
-#------------------------------------------------------------------------------
-# History:
-#
-# 27 Aug 1997	Catherine E.		Created initial version of class
-#		Nutting-Lane, RTi
-# 11 Feb 1998	Catherine E.		Added SMFileData.setDirty to all set
-#		Nutting-Lane, RTi	routines.  Added throws IOException to
-#					read/write routines
-# 16 Feb 2001	Steven A. Malers, RTi	Update output header to be consistent
-#					with new documentation.  Add finalize().
-#					Alphabetize methods.  Set unused
-#					variables to null.  Handle null
-#					arguments.  Change IO to IOUtil.  Get
-#					rid of low-level debugs that are not
-#					needed.
-# 02 Mar 2001	SAM, RTi		Ray says to use F16.0 for rights and
-#					get rid of the 4x.
-# 2001-12-27	SAM, RTi		Update to use new fixedRead()to
-#					improve performance.
-# 2002-09-19	SAM, RTi		Use isDirty()instead of setDirty()to
-#					indicate edits.
-#------------------------------------------------------------------------------
-# 2003-06-04	J. Thomas Sapienza, RTi	Renamed from SMDivRights to
-#					StateMod_DiversionRight
-# 2003-06-10	JTS, RTi		* Folded dumpDiversionRightsFile() into
-#					  writeDiversionRightsFile()
-#					* Renamed parseDiversionRightsFile() to
-#					  readDiversionRightsFile()
-# 2003-06-23	JTS, RTi		Renamed writeDiversionRightsFile() to
-#					writeStateModFile()
-# 2003-06-26	JTS, RTi		Renamed readDiversionRightsFile() to
-#					readStateModFile()
-# 2003-07-07	SAM, RTi		Check for null data set to allow the
-#					code to be used outside of a full
-#					StateMod data set implementation.
-# 2003-07-15	JTS, RTi		Changed code to use new dataset design.
-# 2003-08-03	SAM, RTi		Changed isDirty() back to setDirty().
-# 2003-08-27	SAM, RTi		Change default value of irtem to
-#					99999.
-# 2003-08-28	SAM, RTi		* Remove linked list logic since a
-#					  Vector of rights is now maintained in
-#					  StateMod_Diversion.
-#					* Call setDirty() on the individual
-#					  objects as well as the component.
-#					* Clean up Javadoc for parameters to
-#					  make more readable.
-# 2003-10-09	JTS, RTi		* Implemented Cloneable.
-#					* Added clone().
-#					* Added equals().
-#					* Implemented Comparable.
-#					* Added compareTo().
-# 2003-10-10	JTS, RTI		Added equals(Vector, Vector)
-# 2003-10-14	JTS, RTi		* Make sure diversion right is marked
-#					  not dirty after initial read and
-#					  construction.
-# 2003-10-15	JTS, RTi		Revised the clone() code.
-# 2004-10-28	SAM, RTi		Add getIdvrswChoices() and
-#					getIdvrswDefault().
-# 2005-01-13	JTS, RTi		* Added createBackup().
-# 					* Added restoreOriginal().
-# 2005-03-13	SAM, RTi		* Clean up output header information for
-#					  switch.
-# 2007-04-12	Kurt Tometich, RTi		Added checkComponentData() and
-#									getDataHeader() methods for check
-#									file and data check support.
-# 2007-03-01	SAM, RTi		Clean up code based on Eclipse feedback.
-# 2007-05-16	SAM, RTi		Implement StateMod_Right interface.
-#------------------------------------------------------------------------------
-# EndHeader
-
 import logging
 
-import DWR.StateMod.StateMod_Data as StateMod_Data
-import DWR.StateMod.StateMod_DataSet as StateMod_DataSet
-import DWR.StateMod.StateMod_Util as StateMod_Util
+from DWR.StateMod.StateMod_Data import StateMod_Data
+from DWR.StateMod.StateMod_DataSet import StateMod_DataSet
+# from DWR.StateMod.StateMod_Util import StateMod_Util
 
 from RTi.Util.String.StringUtil import StringUtil
 
 
-class StateMod_DiversionRight(StateMod_Data.StateMod_Data):
+class StateMod_DiversionRight(StateMod_Data):
 
     def __init__(self):
 
         # Administration number.
-        self._irtem = str()
+        self.irtem = None
 
         # Decreed amount
-        self._dcrdiv = float()
+        self.dcrdiv = None
 
         # ID, Name, and Cgoto are in the base class.
 
         # Initialize data
-        self.initialize_StateMod_DiversionRight()
+        self.initialize_statemod_diversionright()
 
         # Call parent constructor
         super().__init__()
 
-    def initialize_StateMod_DiversionRight(self):
+    def initialize_statemod_diversionright(self):
         """
         Initialize data members.
         """
-        self._smdata_type = StateMod_DataSet.StateMod_DataSet.COMP_DIVERSION_RIGHTS
-        self._irtem = "99999"
-        self._dcridiv = 0
+        self.smdata_type = StateMod_DataSet.COMP_DIVERSION_RIGHTS
+        self.irtem = "99999"
+        self.dcridiv = 0
 
     @staticmethod
-    def readStateModFile(filename):
+    def read_statemod_file(filename):
         """
         Parses the diversion rights file and returns a vector of StateMod_DiversionRight objects.
         :param filename: the diversion rights file to parse
         :return: a Vector of StateMod_DiversionRight objects.
         """
-        logger = logging.getLogger("StateMod")
-        routine = "StateMod_DiversionRight.readStateModFile"
-        theDivRights = []
+        logger = logging.getLogger(__name__)
+        the_div_rights = []
 
         format_0 = [
             StringUtil.TYPE_STRING,
@@ -161,7 +86,7 @@ class StateMod_DiversionRight(StateMod_Data.StateMod_Data):
 
         iline = None
         v = []
-        aRight = None
+        a_right = None
 
         logger.info("Reading diversion rights file: " + filename)
 
@@ -172,40 +97,40 @@ class StateMod_DiversionRight(StateMod_Data.StateMod_Data):
                     if (iline.startswith("#")) or (len(iline.strip()) == 0):
                         continue
 
-                    aRight = StateMod_DiversionRight()
+                    a_right = StateMod_DiversionRight()
 
-                    StringUtil.fixedRead2(iline, format_0, format_0w, v)
-                    aRight.setID(v[0].strip())
-                    aRight.setName(v[1].strip())
-                    aRight.setCgoto(v[2].strip())
-                    aRight.setIrtem(v[3].strip())
-                    aRight.setDcrdiv(float(v[4]))
-                    aRight.setSwitch(int(v[5]))
+                    StringUtil.fixed_read2(iline, format_0, format_0w, v)
+                    a_right.set_id(v[0].strip())
+                    a_right.set_name(v[1].strip())
+                    a_right.set_cgoto(v[2].strip())
+                    a_right.set_irtem(v[3].strip())
+                    a_right.set_dcrciv(float(v[4]))
+                    a_right.set_switch(int(v[5]))
                     # Mark as clean because set methods may have marked dirty...
-                    aRight.setDirty(False)
-                    theDivRights.append(aRight)
+                    a_right.set_dirty(False)
+                    the_div_rights.append(a_right)
         except Exception as e:
             logger.warning(e)
-        return theDivRights
+        return the_div_rights
 
-    def setDcrdiv(self, dcrdiv):
+    def set_dcrciv(self, dcrdiv):
         """
         Set the decreed amount
         """
-        if dcrdiv != self._dcrdiv:
-            self._dcrdiv = dcrdiv
-            self.setDirty(True)
-            if (not self._isClone) and (self._dataset is not None):
-                self._dataset.setDirty(StateMod_DataSet.StateMod_DataSet.COMP_DIVERSION_RIGHTS, True)
+        if dcrdiv != self.dcrdiv:
+            self.dcrdiv = dcrdiv
+            self.set_dirty(True)
+            if (not self.is_clone) and (self.dataset is not None):
+                self.dataset.set_dirty(StateMod_DataSet.COMP_DIVERSION_RIGHTS, True)
 
-    def setIrtem(self, irtem):
+    def set_irtem(self, irtem):
         """
         Set the administration number.
         """
         if irtem is None:
             return
-        if not irtem == self._irtem:
-            self._irtem = irtem.strip()
-            self.setDirty(True)
-            if (not self._isClone) and (self._dataset is not None):
-                self._dataset.setDirty(StateMod_DataSet.StateMod_DataSet.COMP_DIVERSION_RIGHTS, True)
+        if not irtem == self.irtem:
+            self.irtem = irtem.strip()
+            self.set_dirty(True)
+            if (not self.is_clone) and (self.dataset is not None):
+                self.dataset.set_dirty(StateMod_DataSet.COMP_DIVERSION_RIGHTS, True)

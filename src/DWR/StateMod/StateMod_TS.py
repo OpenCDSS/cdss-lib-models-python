@@ -2,93 +2,27 @@
 
 # NoticeStart
 #
-# CDSS Models Java Library
-# CDSS Models Java Library is a part of Colorado's Decision Support Systems (CDSS)
+# CDSS Models Python Library
+# CDSS Models Python Library is a part of Colorado's Decision Support Systems (CDSS)
 # Copyright (C) 1994-2019 Colorado Department of Natural Resources
 #
-# CDSS Models Java Library is free software:  you can redistribute it and/or modify
+# CDSS Models Python Library is free software:  you can redistribute it and/or modify
 #     it under the terms of the GNU General Public License as published by
 #     the Free Software Foundation, either version 3 of the License, or
 #     (at your option) any later version.
 #
-#     CDSS Models Java Library is distributed in the hope that it will be useful,
+#     CDSS Models Python Library is distributed in the hope that it will be useful,
 #     but WITHOUT ANY WARRANTY; without even the implied warranty of
 #     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #     GNU General Public License for more details.
 #
 #     You should have received a copy of the GNU General Public License
-#     along with CDSS Models Java Library.  If not, see <https://www.gnu.org/licenses/>.
+#     along with CDSS Models Python Library.  If not, see <https://www.gnu.org/licenses/>.
 #
 # NoticeEnd
 
-# ----------------------------------------------------------------------------
-# StateMod_TS - class to read/write StateMod format time series
-# ----------------------------------------------------------------------------
-# History:
-#
-# 28 Nov 2000	Steven A. Malers, RTi	Copy and modify DateValueTS to include
-#					getSample().  This class will eventually
-#					combine the StateModMonthTS and
-#					StateModDayTS code, as time allows.
-# 28 Feb 2001	SAM, RTi		Add getFileInterval() to help
-#					automatically determine whether data
-#					are monthly or daily format.
-# 2003-06-19	SAM, RTi		* Rename class from StateModTS to
-#					  StateMod_TS and start to include code
-#					  from legacy StateModMonthTS and
-#					  StateModDayTS classes.
-#					* Update to use new TS package (e.g.,
-#					  use DateTime instead of TSDate and
-#					  TimeInterval instead of TSInterval).
-# 2003-07-08	SAM, RTI		Rename write methods from
-#					writePersistent*() to
-#					writeTimeSeries*().
-# 2003-08-22	SAM, RTI		Enable daily time series read in
-#					readTimeSeriesList().
-# 2003-09-03	SAM, RTI		Fix a bug reading daily data.
-# 2003-10-09	SAM, RTI		Fix a bug reading data other than
-#					calendar year - the year was not
-#					getting set correctly in the read.
-# 2003-11-04	SAM, RTi		Add readTimeSeries() to take a TSID
-#					and file name, to read a requested
-#					time series.
-# 2003-12-11	SAM, RTi		Add readPatternTimeSeriesList() -
-#					from the old StateModMonthTS.
-#					readPatternFile().
-# 2004-01-15	SAM, RTi		* Remove revisits that were limiting
-#					  previous functionality (precision
-#					  formatting, calendar type).
-#					* Change writeTimeSeriesList(,PropList)
-#					  to return void.
-# 2004-01-31	SAM, RTi		* Enable writing of daily files.
-#					  Similar to readTimeSeries() both
-#					  daily and monthly format is supported
-#					  in writeTimeSeries().
-#					* Optimize the writeTimeSeries() code
-#					  some - remove extra loops and checks,
-#					  and add a boolean array to help avoid
-#					  repeated checks for null or bad time
-#					  series.
-# 2005-05-06	SAM, RTi		* Add writePatternTimeSeriesList().
-#					  Copy and modify writeTimeSeriesList to
-#					  implement.  Some additional features
-#					  may be enabled later.
-#					* Clean up some of the old messages that
-#					  were still using "writePersistent".
-# 2005-09-09	SAM, RTi		* Allow comments in the data part of
-#					  monthly and daily files.
-# 2006-01-23	SAM, RTi		* Fix bug where monthly average time
-#					  series were not being read in properly
-#					  for water year.
-# 2007-03-01	SAM, RTi		Clean up code based on Eclipse feedback.
-# 2007-04-10	SAM, RTi		Change default prevision from 2 to -2 as per
-#						writeStateMod() command docs - this is a better default.
-# ----------------------------------------------------------------------------
-# EndHeader
-
 import logging
 import os
-import time
 
 from RTi.TS.DayTS import DayTS
 from RTi.TS.MonthTS import MonthTS
@@ -97,7 +31,6 @@ from RTi.TS.TSUtil import TSUtil
 from RTi.Util.IO.IOUtil import IOUtil
 from RTi.Util.String.StringUtil import StringUtil
 from RTi.Util.Time.DateTime import DateTime
-from RTi.Util.Time.StopWatch import StopWatch
 from RTi.Util.Time.TimeInterval import TimeInterval
 from RTi.Util.Time.TimeUtil import TimeUtil
 from RTi.Util.Time.YearType import YearType
@@ -138,30 +71,29 @@ class StateMod_TS(object):
         pass
 
     @staticmethod
-    def getFileDataInterval(filename):
+    def get_file_data_interval(filename):
         """
         Determine whether a StateMod file is daily or monthly format.  This is done
         by reading through the file until the first line of data.  If that line has
         more than 150 characters, it is assumed to be a daily file; otherwise it is assumed
         to be a monthly file.  Currently, this method does NOT verify that the file
         contents are actually for StateMod.
-        The IOUtil.getPathUsingWorkingDir() method is applied to the filename.
+        The IOUtil.get_path_using_working_dir() method is applied to the filename.
         :param filename: Name of file to examine.
         :return: TimeInterval.DAY, TimeInterval.MONTH or -999
         """
-        logger = logging.getLogger("StateMod")
+        logger = logging.getLogger(__name__)
         message = None
-        routine = "StateMod_TS.getFileDataInterval"
         iline = None
-        intervalUnknown = -999  # Return if can't figure out interval
-        interval = intervalUnknown
-        full_filename = IOUtil.getPathUsingWorkingDir(filename)
+        interval_unknown = -999  # Return if can't figure out interval
+        interval = interval_unknown
+        full_filename = IOUtil.get_path_using_working_dir(filename)
         try:
             f = open(full_filename)
         except Exception as e:
             msg = "Unable to open file \"{}\" to determine data interval.".format(full_filename)
             logger.warning(msg)
-            return intervalUnknown
+            return interval_unknown
         try:
             if filename.upper().endswith("XOP"):
                 # The *.xop file will have "Time Step: Monthly"
@@ -204,14 +136,14 @@ class StateMod_TS(object):
                         interval = TimeInterval.MONTH
         except Exception as e:
             # Could not determine file interval
-            return intervalUnknown
+            return interval_unknown
         return interval
 
     @staticmethod
-    def readTimeSeriesList(fname, date1, date2, units, read_data):
+    def read_time_series_list(fname, date1, date2, units, read_data):
         """
         Read all the time series from a StateMod format file.
-        The IOUtil.getPathUsingWorkingDir() method is applied to the filename.
+        The IOUtil.get_path_using_working_dir() method is applied to the filename.
         :param fname: Name of file to read.
         :param date1: Starting date to initialize period (NULL to read the entire time series).
         :param date2: Ending date to initialize period (NULL to read the entire time series).
@@ -220,52 +152,51 @@ class StateMod_TS(object):
         :return: a pointer to a newly-allocated Vector of time series if successful, a NULL pointer
         if not.
         """
-        logger = logging.getLogger("StateMod")
+        logger = logging.getLogger(__name__)
         tslist = None
-        routine = "StateMod_TS.readTimeSeriesList"
 
         input_name = fname
-        full_fname = IOUtil.getPathUsingWorkingDir(fname)
+        full_fname = IOUtil.get_path_using_working_dir(fname)
         data_interval = 0
-        if( not os.path.isfile(full_fname)):
+        if(not os.path.isfile(full_fname)):
             logger.warning("File does not exist: \"{}\"".format(full_fname))
         try:
-            data_interval = StateMod_TS.getFileDataInterval(full_fname)
+            data_interval = StateMod_TS.get_file_data_interval(full_fname)
             with open(full_fname) as f:
-                tslist = StateMod_TS.readTimeSeriesList2(None, f, full_fname, data_interval,
-                                                        date1, date2, units, read_data)
+                tslist = StateMod_TS.read_time_series_list2(None, f, full_fname, data_interval,
+                                                            date1, date2, units, read_data)
             nts = int()
             if tslist is not None:
                 nts = len(tslist)
             for i in range(nts):
                 ts = tslist[i]
                 if ts is not None:
-                    ts.setInputName(full_fname)
-                    ts.getIdentifier().setInputName(input_name)
+                    ts.set_input_name(full_fname)
+                    ts.get_identifier().set_input_name(input_name)
         except Exception as e:
             logger.warning("Could not read file: \"{]\"".format(full_fname))
         return tslist
 
     @staticmethod
-    def readTimeSeriesList2(req_ts, f, fullFilename, fileInterval, reqDate1, reqDate2, reqUnits, readData):
+    def read_time_series_list2(req_ts, f, full_filename, file_interval, req_date1, req_date2, req_units, read_data):
         """
         Read one or more time series from a StateMod format file.
         :param req_ts: Pointer to time series to fill. If null, return all new time series
         in the list. All data are reset, except for the identifier, which is assumed to have
         been set in the calling code.
         :param f: reference to open filestream
-        :param fullFilename: Full path to filename, used for messages.
-        :param fileInterval: Indicates the file type (TimeInterval.DAY or TimeInterval.MONTH).
-        :param reqDate1: Requested starting date to initialize period (or NULL to read the entire
+        :param full_filename: Full path to filename, used for messages.
+        :param file_interval: Indicates the file type (TimeInterval.DAY or TimeInterval.MONTH).
+        :param req_date1: Requested starting date to initialize period (or NULL to read the entire
         time series).
-        :param reqDate2: Requested ending date to initialize period (or NULL to read the entire time series).
-        :param reqUnits: Units to convert to (currently ignored).
-        :param readData: Indicates whether data should be read.
+        :param req_date2: Requested ending date to initialize period (or NULL to read the entire time series).
+        :param req_units: Units to convert to (currently ignored).
+        :param read_data: Indicates whether data should be read.
         :return: a list of time series if successful, null if not. The calling code is responsible
         for freeing the memory for the time series.
         """
-        #start = time.time()
-        logger = logging.getLogger("StateMod")
+        # start = time.time()
+        logger = logging.getLogger(__name__)
         dl = 40
         i = int()
         line_count = 0
@@ -273,7 +204,7 @@ class StateMod_TS(object):
         m2 = int()
         y1 = int()
         y2 = int()
-        currentTSindex = int()
+        current_ts_index = int()
         current_month = 1
         current_year = 0
         doffset = 2
@@ -284,25 +215,24 @@ class StateMod_TS(object):
 
         chval = str()
         iline = ""
-        routine = "StateMod_TS.readTimeSeriesList"
 
         v = []
         date = None
-        if fullFilename.upper().endswith("XOP"):
+        if full_filename.upper().endswith("XOP"):
             # XOP file is similar to the normal time series format but has some difference
             # in that the header is different, station identifier is provided in the header, and
             # time series are listed vertically one after another, not interwoven by interval like
             # *.stm
-            return StateMod_TS.readXTimeSeriesList(req_ts, f, fullFilename, fileInterval,
-                                                   reqDate1, reqDate2, reqUnits, readData)
-        fileIntervalString = ""
-        if fileInterval == TimeInterval.DAY:
+            return StateMod_TS.read_x_time_series_list(req_ts, f, full_filename, file_interval,
+                                                       req_date1, req_date2, req_units, read_data)
+        file_interval_string = ""
+        if file_interval == TimeInterval.DAY:
             date = DateTime(DateTime.PRECISION_DAY)
             doffset = 3  # Used when setting data to skip the leading fields on the data line
-            fileIntervalString = "Day"
-        elif fileInterval == TimeInterval.MONTH:
+            file_interval_string = "Day"
+        elif file_interval == TimeInterval.MONTH:
             date = DateTime(DateTime.PRECISION_MONTH)
-            fileIntervalString = "Month"
+            file_interval_string = "Month"
         else:
             logger.warning("Requested file interval is invalid.")
 
@@ -317,7 +247,7 @@ class StateMod_TS(object):
         date1_header = None
         date2_header = None
         units = ""
-        yearType = YearType.YearType_CALENDAR()
+        year_type = YearType.YearType_CALENDAR()
         try:  # General error handler
             # Read first line of the file
             line_count += 1
@@ -326,7 +256,7 @@ class StateMod_TS(object):
             while i < len(lines) - 1:
                 i += 1
                 iline = lines[i]
-                if iline == None:
+                if iline is None:
                     logger.warning("Zero length file.")
                     return None
                 if len(iline.strip()) < 1:
@@ -346,38 +276,38 @@ class StateMod_TS(object):
                 # header line malformatted.  Rather than change all the files, check
                 # for a '/' in the [3] position and adjust the format.  Print a warning at level 1.
 
-                format_fileContents = None
+                format_file_contents = None
                 if iline[3] == '/':
-                    logger.warning("Non-standard header for file \"" + fullFilename + "\" allowing with work-around.")
-                    format_fileContents = "i3x1i4x5i5x1i4s5s5"
+                    logger.warning("Non-standard header for file \"" + full_filename + "\" allowing with work-around.")
+                    format_file_contents = "i3x1i4x5i5x1i4s5s5"
                 else:
                     # Probably formatted correctly...
-                    format_fileContents = "i5x1i4x5i5x1i4s5s5"
+                    format_file_contents = "i5x1i4x5i5x1i4s5s5"
 
-                v = StringUtil.fixedRead1(iline, format_fileContents)
+                v = StringUtil.fixed_read(iline, format_file_contents)
 
                 m1 = int(v[0])
                 y1 = int(v[1])
                 m2 = int(v[2])
                 y2 = int(v[3])
-                if fileInterval == TimeInterval.DAY:
+                if file_interval == TimeInterval.DAY:
                     date1_header = DateTime(DateTime.PRECISION_DAY)
-                    date1_header.setYear(y1)
-                    date1_header.setMonth(m1)
-                    date1_header.setDay(1)
+                    date1_header.set_year(y1)
+                    date1_header.set_month(m1)
+                    date1_header.set_day(1)
                 else:
                     date1_header = DateTime(DateTime.PRECISION_MONTH)
-                    date1_header.setYear(y1)
-                    date1_header.setMonth(m1)
-                if fileInterval == TimeInterval.DAY:
+                    date1_header.set_year(y1)
+                    date1_header.set_month(m1)
+                if file_interval == TimeInterval.DAY:
                     date2_header = DateTime(DateTime.PRECISION_DAY)
-                    date2_header.setYear(y2)
-                    date2_header.setMonth(m2)
-                    date2_header.setDay(TimeUtil.numDaysInMonth(m2,y2))
+                    date2_header.set_year(y2)
+                    date2_header.set_month(m2)
+                    date2_header.set_day(TimeUtil.num_days_in_month(m2, y2))
                 else:
                     date2_header = DateTime(DateTime.PRECISION_MONTH)
-                    date2_header.setYear(y2)
-                    date2_header.setMonth(m2)
+                    date2_header.set_year(y2)
+                    date2_header.set_month(m2)
                 units = v[4].strip()
                 yeartypes = v[5].strip()
                 # Year type is used in one place to initialize the year when
@@ -390,7 +320,7 @@ class StateMod_TS(object):
 
                 format = []
                 format_w = []
-                if fileInterval == TimeInterval.DAY:
+                if file_interval == TimeInterval.DAY:
                     format = [int()]*35
                     format_w = [int()]*35
                     format[0] = StringUtil.TYPE_INTEGER
@@ -398,33 +328,33 @@ class StateMod_TS(object):
                     format[2] = StringUtil.TYPE_SPACE
                     format[3] = StringUtil.TYPE_STRING
                     # TODO @jurentie 04/26/2019 - the following might need tested
-                    iFormat = 4
+                    i_format = 4
                     for j in range(30):
-                        format[iFormat] = StringUtil.TYPE_DOUBLE
-                        iFormat += 1
+                        format[i_format] = StringUtil.TYPE_DOUBLE
+                        i_format += 1
                     format_w[0] = 4
                     format_w[1] = 4
                     format_w[2] = 1
                     format_w[3] = 12
-                    iFormat = 4
+                    i_format = 4
                     for j in range(30):
-                        format_w[iFormat] = 8
-                        iFormat += 1
+                        format_w[i_format] = 8
+                        i_format += 1
                 else:
                     format = [int()] * 14
                     format[0] = StringUtil.TYPE_INTEGER
                     format[1] = StringUtil.TYPE_STRING
-                    iFormat = 2
+                    i_format = 2
                     for j in range(12):
-                        format[iFormat] = StringUtil.TYPE_DOUBLE
-                        iFormat += 1
+                        format[i_format] = StringUtil.TYPE_DOUBLE
+                        i_format += 1
                     format_w = [int()] * 14
                     format_w[0] = 5
                     format_w[1] = 12
-                    iFormat = 2
+                    i_format = 2
                     for j in range(12):
-                        format_w[iFormat] = 8
-                        iFormat += 1
+                        format_w[i_format] = 8
+                        i_format += 1
                 if y1 == 0:
                     # average monthly series
                     standard_ts = False
@@ -436,7 +366,7 @@ class StateMod_TS(object):
                 else:
                     # Standard time series, includes a year on input lines
                     current_year = y1
-                    if fileInterval == TimeInterval.MONTH and (m2 < m1):
+                    if file_interval == TimeInterval.MONTH and (m2 < m1):
                         # Monthly data and not calendar year - the first year
                         # shown in the data will be water or irrigation year
                         # and will not match the calendar dates shown in the header...
@@ -448,8 +378,8 @@ class StateMod_TS(object):
 
                 # Read remaining data lines. If in the first year, allocate memory
                 # for each time series as a new station is encountered.
-                currentTSindex = 0
-                currentTS = None  # used to fill data
+                current_ts_index = 0
+                current_ts = None  # used to fill data
                 ts = None  # used to fill data
                 id = None  # Identifier for a row
 
@@ -463,7 +393,7 @@ class StateMod_TS(object):
                     if data_line_count == 0:
                         i += 1
                         iline = lines[i]
-                        if iline == None:
+                        if iline is None:
                             break
                         elif iline.startswith("#"):
                             # Comment line. Count the line but do not treat as data...
@@ -536,7 +466,7 @@ class StateMod_TS(object):
                         # Have a requested identifier and there are more than one time series.
                         # Get the ID from the input line. Don't parse out the remaining
                         # lines unless this line is a match...
-                        if fileInterval == TimeInterval.MONTH:
+                        if file_interval == TimeInterval.MONTH:
                             chval = iline[5:17]
                         else:
                             # Daily offset for month...
@@ -550,16 +480,16 @@ class StateMod_TS(object):
                                 continue
 
                     # Parse the data line...
-                    StringUtil.fixedRead2(iline, format, format_w, v)
+                    StringUtil.fixed_read2(iline, format, format_w, v)
                     if standard_ts:
                         # This is monthly and includes year
                         current_year = int(v[0])
-                        if fileInterval == TimeInterval.DAY:
+                        if file_interval == TimeInterval.DAY:
                             current_month = int(v[1])
 
                     # If we are reading the entire file, set id to current id
                     if req_id is None:
-                        if fileInterval == TimeInterval.DAY:
+                        if file_interval == TimeInterval.DAY:
                             # Have year, month, and then ID...
                             id = v[2].strip()
                         else:
@@ -567,10 +497,12 @@ class StateMod_TS(object):
                             id = v[1].strip()
 
                     # We are still establishing the list of stations in file
-                    if ((fileInterval == TimeInterval.DAY) and (current_year == init_year) and (current_month == init_month)) or ((fileInterval == TimeInterval.MONTH) and (current_year == init_year)):
-                        if req_id == None:
+                    if ((file_interval == TimeInterval.DAY) and (current_year == init_year) and
+                        (current_month == init_month)) or ((file_interval == TimeInterval.MONTH) and
+                                                           (current_year == init_year)):
+                        if req_id is None:
                             # Create a new time series...
-                            if fileInterval == TimeInterval.DAY:
+                            if file_interval == TimeInterval.DAY:
                                 ts = DayTS()
                             else:
                                 ts = MonthTS()
@@ -580,55 +512,55 @@ class StateMod_TS(object):
                             req_id_found = True
                             numts = 1
                             # Save this index as that used for the requested time series...
-                        if (reqDate1 is not None) and (reqDate2 is not None):
+                        if (req_date1 is not None) and (req_date2 is not None):
                             # Allocate memory for the time series based on the requested period.
-                            ts.setDate1(reqDate1)
-                            ts.setDate2(reqDate2)
-                            ts.setDate1Original(date1_header)
-                            ts.setDate2Original(date2_header)
+                            ts.set_date1(req_date1)
+                            ts.set_date2(req_date2)
+                            ts.set_date1_original(date1_header)
+                            ts.set_date2_original(date2_header)
                         else:
                             # Allocate memory for the time series based on the file header...
-                            date.setMonth(m1)
-                            date.setYear(y1)
-                            if fileInterval == TimeInterval.DAY:
-                                date.setDay(1)
-                            ts.setDate1(date)
-                            ts.setDate1Original(date1_header)
+                            date.set_month(m1)
+                            date.set_year(y1)
+                            if file_interval == TimeInterval.DAY:
+                                date.set_day(1)
+                            ts.set_date1(date)
+                            ts.set_date1_original(date1_header)
 
-                            date.setMonth(m2)
-                            date.setYear(y2)
-                            if fileInterval == TimeInterval.DAY:
-                                date.setDay(TimeUtil.numDaysInMonth(m2, y2))
-                            ts.setDate2(date)
-                            ts.setDate2Original(date2_header)
+                            date.set_month(m2)
+                            date.set_year(y2)
+                            if file_interval == TimeInterval.DAY:
+                                date.set_day(TimeUtil.num_days_in_month(m2, y2))
+                            ts.set_date2(date)
+                            ts.set_date2_original(date2_header)
 
-                        if readData:
-                            ts.allocateDataSpace()
+                        if read_data:
+                            ts.allocate_data_space()
 
-                        ts.setDataUnits(units)
-                        ts.setDataUnitsOriginal(units)
+                        ts.set_data_units(units)
+                        ts.set_data_units_original(units)
 
                         # The input name is the full path to the input file...
-                        ts.setInputName(fullFilename)
+                        ts.set_input_name(full_filename)
                         # Set other identifier information. The readTimeSeries() version that
                         # takes a full identifier will reset teh file information because it
                         # knows whether the original filename was from the scenario, etc.
                         ident = TSIdent()
-                        ident.setLocation2(id)
-                        if fileInterval == TimeInterval.DAY:
-                            ident.setInterval_intervalString("DAY")
+                        ident.set_location2(id)
+                        if file_interval == TimeInterval.DAY:
+                            ident.set_interval_interval_string("DAY")
                         else:
-                            ident.setInterval_intervalString("MONTH")
-                        ident.setInputType("StateMod")
-                        ident.setInputName(fullFilename)
-                        ts.setDescription(id)
+                            ident.set_interval_interval_string("MONTH")
+                        ident.set_input_type("StateMod")
+                        ident.set_input_name(full_filename)
+                        ts.set_description(id)
                         # May be forcing a read if only one time series but only reset the
                         # identifier if the file identifier does match the requested...
                         if ((req_id is not None) and req_id_found and (id.upper() == req_id)) or (req_id is None):
                             # Found the matching ID.
-                            ts.setIdentifier(ident)
-                            ts.addToGenesis("Read StateMod TS for " + str(ts.getDate1()) + " to " + str(ts.getDate2())
-                                            + " from \"" + fullFilename + "\"")
+                            ts.set_identifier(ident)
+                            ts.add_to_genesis("Read StateMod TS for " + str(ts.get_date1()) + " to " +
+                                              str(ts.get_date2()) + " from \"" + full_filename + "\"")
                         if not req_id_found:
                             # Attach new time series to list. This is only done if we have not passed
                             # in a requested time series to fill.
@@ -637,63 +569,63 @@ class StateMod_TS(object):
                             tslist.append(ts)
                             numts += 1
                     else:
-                        if not readData:
+                        if not read_data:
                             break
 
-                    # If we are working through the first year, currentTSindex will
+                    # If we are working through the first year, current_ts_index will
                     # be the last element index. On the other hand, if we have already
-                    # established the list and are filling the rest of the rows, currentTSindex
+                    # established the list and are filling the rest of the rows, current_ts_index
                     # should be reset to 0. This assumes that the number and order of stations is
                     # consistent in the file from year to year.
 
-                    if currentTSindex >= numts:
-                        currentTSindex = 0
+                    if current_ts_index >= numts:
+                        current_ts_index = 0
                     if not req_id_found:
                         # Filling a vector of TS...
-                        currentTS = tslist[currentTSindex]
+                        current_ts = tslist[current_ts_index]
                     else:
                         # Filling a single time series...
-                        currentTS = req_ts
+                        current_ts = req_ts
 
-                    if fileInterval == TimeInterval.DAY:
+                    if file_interval == TimeInterval.DAY:
                         # Year from the file is always calendar year...
-                        date.setYear(current_year)
+                        date.set_year(current_year)
                         # Month from the file is always calendar month...
-                        date.setMonth(current_month)
+                        date.set_month(current_month)
                         # Day always starts at 1...
-                        date.setDay(1)
+                        date.set_day(1)
                     else:
                         # Monthly data. The year is for calendar type and
                         # therefore the starting year may actually need to
                         # be set to the previous year. Don't do the shift
                         # for average monthly values.
                         if standard_ts and (yeartype != YearType.YearType_CALENDAR()):
-                            date.setYear(current_year - 1)
+                            date.set_year(current_year - 1)
                         else:
-                            date.setYear(current_year)
+                            date.set_year(current_year)
                         # Month is assumed from calendar type - it is assumed that the header
                         # is correct...
-                        date.setMonth(m1)
-                    if reqDate2 is not None:
-                        if date.greaterThan(reqDate2):
+                        date.set_month(m1)
+                    if req_date2 is not None:
+                        if date.greater_than(req_date2):
                             break
 
-                    if readData:
-                        if fileInterval == TimeInterval.DAY:
+                    if read_data:
+                        if file_interval == TimeInterval.DAY:
                             # Need to loop through the proper number of days for the month...
-                            ndata_per_line = TimeUtil.numDaysInMonth(date.getMonth(), date.getYear())
+                            ndata_per_line = TimeUtil.num_days_in_month(date.getMonth(), date.getYear())
                         for j in range(ndata_per_line):
-                            currentTS.setDataValue(date, float(v[j+doffset]))
-                            if fileInterval == TimeInterval.DAY:
+                            current_ts.set_data_value(date, float(v[j+doffset]))
+                            if file_interval == TimeInterval.DAY:
                                 date.addDay(1)
                             else:
-                                date.addMonth(1)
-                    currentTSindex+=1
+                                date.add_month(1)
+                    current_ts_index += 1
                 # print("time end: " + str(time.time() - start))
                 break
         except Exception as e:
             message = ("Error reading file near line " + str(line_count) + " header indicates interval " +
-                       fileIntervalString + ", period " + str(date1_header) + " to " + str(date2_header) +
+                       file_interval_string + ", period " + str(date1_header) + " to " + str(date2_header) +
                        ", units =\"" + units + "\" line: " + str(iline))
             logger.warning(message)
             logger.warning(e)
@@ -701,48 +633,47 @@ class StateMod_TS(object):
         return tslist
 
     @staticmethod
-    def readXTimeSeriesList(req_ts, f, fullFilename, fileInterval, reqDate1, reqDate2, reqUnits, readData):
+    def read_x_time_series_list(req_ts, f, full_filename, file_interval, req_date1, req_date2, req_units, read_data):
         """
         Read a StateMod time series in an output format, for example the *xop.  This format has one
         time series listed after each other, with a main file header, time series header, and time series data.
         Currently only the monthly *xop file has been tested.
         """
-        logger = logging.getLogger("StateMod")
-        routine = "StateMod_TS.readXTimeSeriesList"
+        logger = logging.getLogger(__name__)
         tslist = []
         req_id = None
         if req_ts is not None:
             # Periods in identifiers are converted to underscores so as to not break period-delimited TSID
             req_id = req_ts.getLocation().replace('.', '_')
         iline = ""
-        lineCount = 0
+        line_count = 0
         try:
             # General error handler
             # Read lines until no more comments are found. The last line read will
             # need to be processed as the main header line...
-            inTsHeader = False
-            inTsData = False
+            in_ts_header = False
+            in_ts_data = False
             units = ""
             id = ""
             name = ""
-            oprType = ""
-            adminNum = ""
+            opr_type = ""
+            admin_num = ""
             source1 = ""
             dest = ""
-            yearOn = ""
-            yearOff = ""
-            firstMonth = ""
+            year_on = ""
+            year_off = ""
+            first_month = ""
             pos = int()
             v = []
             format = None
             format_w = None
-            dataRowCount = 0  # Initialize for first iteration
+            data_row_count = 0  # Initialize for first iteration
             maxYears = 500  # Maximum years of data in a time series handled
-            yearArray = [int()] * maxYears
-            dataArray = [[float()]*13]*maxYears
+            year_array = [int()] * maxYears
+            data_array = [[float()]*13]*maxYears
             year = int()
-            if fileInterval == TimeInterval.MONTH:
-                if readData:
+            if file_interval == TimeInterval.MONTH:
+                if read_data:
                     format = [int()] * 14
                     format_w = [int()] * 14
                 else:
@@ -751,35 +682,35 @@ class StateMod_TS(object):
                     format = [int()] * 1
                 format[0] = StringUtil.TYPE_INTEGER
                 format_w[0] = 4
-                if readData:
-                    for iFormat in range(14):
-                        format[iFormat] = StringUtil.TYPE_DOUBLE
-                    for iFormat in range(14):
-                        format_w[iFormat] = 8
+                if read_data:
+                    for i_format in range(14):
+                        format[i_format] = StringUtil.TYPE_DOUBLE
+                    for i_format in range(14):
+                        format_w[i_format] = 8
             else:
                 logger.warning("Do not know how to read daily XOP file.")
             for iline in f:
-                lineCount += 1
+                line_count += 1
                 # The first checks are expected at the top of the file but blank lines
                 # and comments could be anywhere
                 if len(iline) == 0:
                     continue
                 elif iline[0] == "#":
                     continue
-                elif (not inTsHeader) and iline.startswith(" Operational Right Summary"):
+                elif (not in_ts_header) and iline.startswith(" Operational Right Summary"):
                     # Units are after this string - check below
-                    inTsHeader = True
-                elif (not inTsHeader) and iline.startswith(" ID ="):
+                    in_ts_header = True
+                elif (not in_ts_header) and iline.startswith(" ID ="):
                     # Second check to detect when in time series header, in case main header is not
                     # as expected
-                    inTsHeader = True
+                    in_ts_header = True
                     # No continue because want to process the line
-                if inTsHeader:
+                if in_ts_header:
                     # Reading the time series header
                     if iline.startswith("_"):
                         # Last line in time series header section
-                        inTsHeader = False
-                        inTsData = True
+                        in_ts_header = False
+                        in_ts_data = True
                     elif iline.startswith(" Operational Right Summary"):
                         # Units are after this strong
                         units = iline[26].strip()
@@ -789,13 +720,13 @@ class StateMod_TS(object):
                         # Following may need to be +13 as per specification, but do 20 to allow flexibility
                         id = iline[pos+4:pos+4+20].strip()
                         # Identifier cannot contain periods so replace with underscore
-                        id = id.replace('.','_')
+                        id = id.replace('.', '_')
                         pos = iline.find("Name =")
                         name = iline[pos+6:pos+6+24].strip()
                         pos = iline.find("Opr Type =")
-                        oprType = iline[pos+10:pos+10+5].strip()
+                        opr_type = iline[pos+10:pos+10+5].strip()
                         pos = iline.find("Admin # =")
-                        adminNum = iline[pos+9:pos+9+17].strip()
+                        admin_num = iline[pos+9:pos+9+17].strip()
                     elif iline.startswith(" Source 1 ="):
                         # Processing:    Source 1 = 0103816.01   Destination = 0103816           Year On =     0   Year Off =  9999
                         pos = iline.find("Source 1 =")
@@ -803,73 +734,74 @@ class StateMod_TS(object):
                         pos = iline.find("Destination =")
                         dest = iline[pos+13:pos+13+12].strip()
                         pos = iline.find("Year On =")
-                        yearOn = iline[pos+9:pos+9+6].strip()
+                        year_on = iline[pos+9:pos+9+6].strip()
                         pos = iline.find("Year Off =")
-                        yearOff = iline[pos+10:pos+10+6].strip()
+                        year_off = iline[pos+10:pos+10+6].strip()
                     elif iline.startswith("YEAR"):
                         # Processing:  YEAR    JAN     FEB     MAR     APR     MAY     JUN     JUL     AUG     SEP     OCT     NOV     DEC     TOT
                         # Mainly interested in first month to know whether calendar
-                        firstMonth = iline[6:14].strip()
-                elif inTsData:
+                        first_month = iline[6:14].strip()
+                elif in_ts_data:
                     # Reading the time series data
                     if iline.startswith("AVG"):
                         # Last line in time series data section - create time series
                         tsid = (id + TSIdent.SEPARATOR + "" + TSIdent.SEPARATOR + "Operation" + TSIdent.SEPARATOR +
-                        "Month" + TSIdent.INPUT_SEPARATOR + "StateMod" + TSIdent.INPUT_SEPARATOR + fullFilename)
-                        ts = TSUtil.newTimeSeries(tsid, True)
-                        ts.setIdentifier(tsid)
-                        yearType = None
-                        if firstMonth.upper() == "JAN":
-                            yearType = YearType.YearType_CALENDAR()
-                        if firstMonth.upper() == "OCT":
-                            yearType = YearType.YearType_WATER()
-                        if firstMonth.upper() == "NOV":
-                            yearType = YearType.YearType_NOV_TO_OCT()
+                                "Month" + TSIdent.INPUT_SEPARATOR + "StateMod" + TSIdent.INPUT_SEPARATOR +
+                                full_filename)
+                        ts = TSUtil.new_time_series(tsid, True)
+                        ts.set_identifier(tsid)
+                        year_type = None
+                        if first_month.upper() == "JAN":
+                            year_type = YearType.YearType_CALENDAR()
+                        if first_month.upper() == "OCT":
+                            year_type = YearType.YearType_WATER()
+                        if first_month.upper() == "NOV":
+                            year_type = YearType.YearType_NOV_TO_OCT()
                         else:
-                            logger.warning("Do not know how to handle year starting with month " + firstMonth)
+                            logger.warning("Do not know how to handle year starting with month " + first_month)
                             return
                         # First set original period using file dates
                         date1 = DateTime(DateTime.PRECISION_MONTH)
-                        date1.setYear(yearArray[0] + yearType.getStartYearOffset())
-                        date1.setMonth(yearType.getStartMonth())
-                        ts.setDate1Original(date1)
+                        date1.set_year(year_array[0] + year_type.getStartYearOffset())
+                        date1.set_month(year_type.getStartMonth())
+                        ts.set_date1_original(date1)
                         date2 = DateTime(DateTime.PRECISION_MONTH)
-                        date2.setYear(yearArray[dataRowCount - 1])
-                        date2.setMonth(yearType.getEndMonth())
-                        ts.setDate2Original(date2)
+                        date2.set_year(year_array[data_row_count - 1])
+                        date2.set_month(year_type.getEndMonth())
+                        ts.set_date2_original(date2)
                         # Set data period to requested if provided
-                        if reqDate1 is not None:
-                            ts.setDate1(reqDate1)
+                        if req_date1 is not None:
+                            ts.set_date1(req_date1)
                         else:
-                            ts.setDate1(ts.getDate1Original())
-                        if reqDate2 is not None:
-                            ts.setDate2(reqDate2)
+                            ts.set_date1(ts.get_date1_original())
+                        if req_date2 is not None:
+                            ts.set_date2(req_date2)
                         else:
-                            ts.setDate2(ts.getDate2Original())
-                        ts.setDataUnits(units)
-                        ts.setDataUnitsOriginal(units)
-                        ts.setInputName(fullFilename)
-                        ts.addToGenesis("Read StateMod TS for " + ts.getDate1() + " to " + ts.getDate2() +
-                                        "from \"" + fullFilename + "\"")
+                            ts.set_date2(ts.get_date2_original())
+                        ts.set_data_units(units)
+                        ts.set_data_units_original(units)
+                        ts.set_input_name(full_filename)
+                        ts.add_to_genesis("Read StateMod TS for " + ts.get_date1() + " to " + ts.get_date2() +
+                                          "from \"" + full_filename + "\"")
                         # Be careful renaming the following because they show up in StateMod_TS_TableModel and
                         # possibly other classes
-                        ts.setProperty("OprType", int(oprType))
-                        ts.setProperty("AdminNum", adminNum)
-                        ts.setProperty("Source1", source1)
-                        ts.setProperty("Destination", dest)
-                        ts.setProperty("YearOn", int(yearOn))
-                        ts.setProperty("YearOff", int(yearOff))
-                        if readData:
+                        ts.set_property("OprType", int(opr_type))
+                        ts.set_property("AdminNum", admin_num)
+                        ts.set_property("Source1", source1)
+                        ts.set_property("Destination", dest)
+                        ts.set_property("YearOn", int(year_on))
+                        ts.set_property("YearOff", int(year_off))
+                        if read_data:
                             # Transfer the data that was read
-                            ts.allocateDataSpace()
+                            ts.allocate_data_space()
                         date = DateTime(DateTime.PRECISION_MONTH)
-                        for iData in range(dataRowCount):
-                            date.setYear(yearArray[iData] + yearType.getStartYearOffset())
-                            date.setMonth(yearType.getStartMonth())
-                            if readData:
+                        for iData in range(data_row_count):
+                            date.set_year(year_array[iData] + year_type.getStartYearOffset())
+                            date.set_month(year_type.getStartMonth())
+                            if read_data:
                                 for iMonth in range(12):
-                                    date.addMonth(1)
-                                    ts.setDataValue(date, dataArray[iData][iMonth])
+                                    date.add_month(1)
+                                    ts.set_data_value(date, data_array[iData][iMonth])
                         if (req_id is not None) and (len(req_id) > 0):
                             if req_id.upper() == id:
                                 # Found the requested time series so no need to keep reading
@@ -879,36 +811,37 @@ class StateMod_TS(object):
                             tslist.append(ts)
                         # Set the flag to read another header and initialized header information
                         # to blanks so they can be populated by the next header
-                        inTsHeader = True
-                        inTsData = False
+                        in_ts_header = True
+                        in_ts_data = False
                         units = ""
-                        dataRowCount = 0
+                        data_row_count = 0
                         id = ""
                         name = ""
-                        oprType = ""
-                        adminNum = ""
+                        opr_type = ""
+                        admin_num = ""
                         source1 = ""
                         dest = ""
-                        yearOn = ""
-                        yearOff = ""
-                        firstMonth = ""
+                        year_on = ""
+                        year_off = ""
+                        first_month = ""
                     else:
                         # If first 4 characters are a number then it is a data line:
                         # 1950  12983.   3282.   8086.      0.      0.      0.      0.      0.      0.      0.      0.  15628.  39979.
                         # Fixed format read and numbers can be squished together
                         if not iline[0:4].isdigit():
                             # Don't know what to do with line
-                            logger.warning("Don't know how to parse data line " + lineCount + ": " + iline.strip())
+                            logger.warning("Don't know how to parse data line " + str(line_count) + ": " +
+                                           iline.strip())
                         else:
                             # Always read the year so it can be used to set the period in time seires metadat
-                            dataRowCount += 1
-                            if dataRowCount <= maxYears:
-                                StringUtil.fixedRead2(iline, format, format_w, v)
+                            data_row_count += 1
+                            if data_row_count <= maxYears:
+                                StringUtil.fixed_read2(iline, format, format_w, v)
                                 year = int(v[0])
-                                yearArray[dataRowCount - 1] = year
-                                if readData:
+                                year_array[data_row_count - 1] = year
+                                if read_data:
                                     for iv in range(14):
-                                        dataArray[dataRowCount - 1][iv - 1] = float(v[iv])
+                                        data_array[data_row_count - 1][iv - 1] = float(v[iv])
         except Exception as e:
             logger.warning(e)
             return
