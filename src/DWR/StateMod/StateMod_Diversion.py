@@ -22,21 +22,22 @@
 # NoticeEnd
 
 import logging
+import os
 import re
 
 from DWR.StateMod.StateMod_Data import StateMod_Data
 from DWR.StateMod.StateMod_DataSetComponentType import StateMod_DataSetComponentType
-# from DWR.StateMod.StateMod_ReturnFlow import StateMod_ReturnFlow
+from DWR.StateMod.StateMod_ReturnFlow import StateMod_ReturnFlow
 from DWR.StateMod.StateMod_Util import StateMod_Util
+from RTi.Util.IO.IOUtil import IOUtil
 
 from RTi.Util.String.StringUtil import StringUtil
-from DWR.StateMod.StateMod_ReturnFlow import StateMod_ReturnFlow
 
 
 class StateMod_Diversion(StateMod_Data):
     """
     Object used to store diversion station information.  All set routines set
-    the COMP_DIVERSION_STATIONS flag dirty.  A new object will have empty non-null
+    the StateMod_DataSetComponentType.DIVERSION_STATIONS flag dirty.  A new object will have empty non-null
     lists, null time series, and defaults for all other data.
     """
 
@@ -197,7 +198,7 @@ class StateMod_Diversion(StateMod_Data):
 
     def initialize_statemod_diversion(self, initialize_defaults):
         """
-        Initialize data. Sets the smdata_type to dataset.COMP_DIVERSION_STATIONS.
+        Initialize data. Sets the smdata_type to StateMod_DataSetComponentTYpe.DIVERSION_STATIONS.
         :param initialize_defaults: If True, assign data to reasonable defaults.
         If False, all data are set to missing.
         """
@@ -242,10 +243,10 @@ class StateMod_Diversion(StateMod_Data):
 
     def add_return_flow(self, rivret):
         """
-        Add return flow node to the vector of return flow nodes.
+        Add return flow node to the list of return flow nodes.
         :param rivret: riveret return flow
         """
-        pass
+        self.rivret.append(rivret)
 
     @staticmethod
     def connect_all_rights(diversions, rights):
@@ -259,6 +260,24 @@ class StateMod_Diversion(StateMod_Data):
                 continue
             div.connect_rights(rights)
 
+    def get_area(self):
+        """
+        :return: the irrigated acreage
+        """
+        return self.area
+
+    def get_cdividy(self):
+        """
+        :return: the daily ID
+        """
+        return self.cdividy
+
+    def get_demsrc(self):
+        """
+        :return: the demand source
+        """
+        return self.demsrc
+
     def get_divcap(self):
         """
         :return: the diversion capacity
@@ -271,6 +290,61 @@ class StateMod_Diversion(StateMod_Data):
         """
         return self.divefc
 
+    def get_diveff(self, i):
+        """
+        :param i: month index 0, where 0 is the first month in the year type
+        :return: the system efficiency for the specified month index
+        """
+        return self.diveff[i]
+
+    def get_idvcom(self):
+        """
+        :return: the data type switch
+        """
+        return self.idvcom
+
+    def get_ireptype(self):
+        """
+        :return: the replacement code
+        """
+        return self.ireptype
+
+    def get_irturn(self):
+        """
+        :return: the use type
+        """
+        return self.irturn
+
+    def get_nrtn(self):
+        """
+        :return: the number of return tables
+        """
+        if self.rivret is None:
+            return 0
+        else:
+            return len(self.rivret)
+
+    def get_return_flow(self, i):
+        """
+        :return: the return flow item from the list, or None if index is out of bounds
+        """
+        if (i < 0) or (i >= len(self.rivret)):
+            return None
+        else:
+            return self.rivret[i]
+
+    def get_return_flows(self):
+        """
+        :return: the return flows list
+        """
+        return self.rivret
+
+    def get_username(self):
+        """
+        :return: the user name
+        """
+        return self.username
+
     @staticmethod
     def read_statemod_file(filename):
         """
@@ -278,11 +352,10 @@ class StateMod_Diversion(StateMod_Data):
         :param filename: filename containing return flow information
         """
         logger = logging.getLogger(__name__)
-        iline = None
+        # iline = None
         v = []
         the_diversions = []
         linecount = 0
-        s = None
 
         format_0 = [
             StringUtil.TYPE_STRING,
@@ -396,7 +469,7 @@ class StateMod_Diversion(StateMod_Data):
                         split = split[1:len(split)-1]
                         if (split is not None) and len(split) == 12:
                             for j, nextToken in enumerate(split):
-                                a_diversion.set_diveff(j, nextToken)
+                                a_diversion.set_diveff(j, float(nextToken))
                     else:
                         # Annual efficiency so set monthly efficiencies to the annual...
                         a_diversion.set_diveff(0, a_diversion.get_divefc())
@@ -426,8 +499,8 @@ class StateMod_Diversion(StateMod_Data):
                         else:
                             a_return_node.set_crtnid(s)
 
-                        a_return_node.setPcttot(float(v[2]))
-                        a_return_node.setIrtndl(int(v[3]))
+                        a_return_node.set_pcttot(float(v[2]))
+                        a_return_node.set_irtndl(int(v[3]))
                         a_diversion.add_return_flow(a_return_node)
 
                     # Set the diversion to not dirty because it was just initialized...
@@ -439,8 +512,7 @@ class StateMod_Diversion(StateMod_Data):
                     the_diversions.append(a_diversion)
 
         except Exception as e:
-            logger.warning("Error reading line {} \"{}\"".format(linecount, iline))
-            logger.warning(e)
+            logger.warning("Error reading line {} \"{}\"".format(linecount, iline), exc_info=True)
 
         return the_diversions
 
@@ -561,3 +633,172 @@ class StateMod_Diversion(StateMod_Data):
             self.set_dirty(True)
             if (not self.is_clone) and (self.dataset is not None):
                 self.dataset.set_dirty(StateMod_DataSetComponentType.DIVERSION_STATIONS, True)
+
+    def write_statemod_file(instrfile, outstrfile, the_diversions, new_comments, use_daily_data):
+        """
+        Write diversion information to output.
+        History header information is also maintained by calling this routine.
+
+        :param instrfile: input file from which previous history should be taken
+        :param outstrfile: output file to which to write
+        :param the_diversions: list of diversions to write.
+        :param new_comments: addition comments which should be included in history
+        :param use_daily_data: Indicates whether daily data should be written.
+        The data are only used if the control file indicates that a daily run is occurring.
+        :return:
+        """
+        comment_indicators = ["#"]
+        ignored_comment_indicators = ["#>"]
+        logger = logging.getLogger(__name__)
+        out = None
+        try:
+            out = IOUtil.process_file_headers(IOUtil.get_path_using_working_dir(instrfile),
+                                              IOUtil.get_path_using_working_dir(outstrfile),
+                                              new_comments, comment_indicators, ignored_comment_indicators, 0)
+
+            # int i
+            # int j
+            # iline
+            cmnt = "#>"
+            # With daily ID....
+            #format_1 = "%-12.12s%-24.24s%-12.12s%8d%#8.2F%8d%8d %-12.12s"
+            format_1 = "%-12.12s%-24.24s%-12.12s%8d%#8.2f%8d%8d %-12.12s"
+            # Without daily ID...
+            #format_1a = "%-12.12s%-24.24s%-12.12s%8d%#8.2F%8d%8d"
+            format_1a = "%-12.12s%-24.24s%-12.12s%8d%#8.2f%8d%8d"
+            #format_2 = "            %-24.24s            %8d%8d%#8.0F%#8.2F%8d%8d"
+            format_2 = "            %-24.24s            %8d%8d%#8.0f%#8.2f%8d%8d"
+            # format_3 = "%1.1s%#5.0F"
+            format_3 = "%1.1s%#5.0f"
+            #format_4 = "                                    %-12.12s%8.2F%8d"
+            format_4 = "                                    %-12.12s%8.2f%8d"
+            div = None
+            ret = None
+            v = []  # Reuse for all output lines.
+            v5 = None  # For return flows.
+            nl = "\n"  # Use for all platforms
+
+            out.write(cmnt + nl)
+            out.write(cmnt + "*************************************************" + nl)
+            out.write(cmnt + "  Direct Diversion Station File" + nl)
+            out.write(cmnt + nl)
+            out.write(cmnt + "  Card 1 format (a12, a24, a12, i8, f8.2, 2i8, 1x, a12)" + nl)
+            out.write(cmnt + nl)
+            out.write(cmnt + "  ID          cdivid:  Diversion station ID" + nl)
+            out.write(cmnt + "  Name        divnam:  Diversion name" + nl)
+            out.write(cmnt + "  Riv ID       cgoto:  River node for diversion" + nl)
+            out.write(cmnt + "  On/Off      idivsw:  Switch 0=off, 1=on" + nl)
+            out.write(cmnt + "  Capacity    divcap:  Diversion capacity (CFS)" + nl)
+            out.write(cmnt + "                dumx:  Not currently used" + nl)
+            out.write(cmnt + "  RepType    ireptyp:  Replacement reservoir option (see StateMod doc)" + nl)
+            out.write(cmnt + "  Daily ID   cdividy:  Daily diversion ID" + nl)
+            out.write(cmnt + nl)
+            out.write(cmnt + "  Card 2 format (12x, a24, 12x, 2i8, f8.2, f8.0, 2i8)" + nl)
+            out.write(cmnt + nl)
+            out.write(cmnt + "  User Name  usernam:  User name." + nl)
+            out.write(cmnt + "  DemType     idvcom:  Demand data type switch (see StateMod doc)" + nl)
+            out.write(cmnt + "  #-Ret         nrtn:  Number of return flow table ref" + nl)
+            out.write(cmnt + "  Eff         divefc:  Annual system efficiency" + nl)
+            out.write(cmnt + "  Area          area:  Irrigated acreage" + nl)
+            out.write(cmnt + "  UseType     irturn:  Use type (see StateMod doc)" + nl)
+            out.write(cmnt + "  Demsrc      demsrc:  Demand source (see StateMod doc)" + nl)
+            out.write(cmnt + nl)
+            out.write(cmnt + "  Card 3 format (free format)" + nl)
+            out.write(cmnt + nl)
+            out.write(cmnt + "     diveff (12):  System efficiency % by month" + nl)
+            out.write(cmnt + nl)
+            out.write(cmnt + "  Card 4 format (36x, a12, f8.2, i8)" + nl)
+            out.write(cmnt + nl)
+            out.write(cmnt + "  Ret ID      crtnid:  River node receiving return flow" + nl)
+            out.write(cmnt + "  Ret %       pcttot:  Percent of return flow to this river node" + nl)
+            out.write(cmnt + "  Table #     irtndl:  Delay (return flow) table for this return flow." + nl)
+            out.write(cmnt + nl)
+
+            out.write(cmnt +
+                      " ID               Name             Riv ID     On/Off  Capacity        RepType   Daily ID" + nl)
+            out.write(cmnt +
+                      "---------eb----------------------eb----------eb------eb------eb------eb------exb----------e" +
+                      nl)
+            out.write(cmnt +
+                      "              User Name                       DemType   #-Ret   Eff %   Area  UseType DemSrc" +
+                      nl)
+            out.write(cmnt +
+                      "xxxxxxxxxxb----------------------exxxxxxxxxxxxb------eb------eb------eb------eb------eb------e" +
+                      nl)
+            out.write(cmnt + "          ... Monthly Efficiencies..." + nl)
+            out.write(cmnt + "b----------------------------------------------------------------------------e" + nl)
+            out.write(cmnt + "                                   Ret ID       Ret % Table #" + nl)
+            out.write(cmnt + "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxb----------eb------eb------e" + nl)
+            out.write(cmnt + "EndHeader" + nl)
+
+            # num = 0
+            # if the_diversions is not None:
+            #     num = len(the_diversions)
+
+            # i = -1
+            for div in the_diversions:
+                # i = i + 1
+                # div = the_diversions[i]
+                if div is None:
+                    continue
+
+                # line 1
+                v.clear()
+                v.append(div.get_id())
+                v.append(div.get_name())
+                v.append(div.get_cgoto())
+                v.append(div.get_switch())
+                v.append(div.get_divcap())
+                v.append(1)  # old nduser, which is not used anymore
+                v.append(div.get_ireptype())
+                if use_daily_data:
+                    v.append(div.get_cdividy())
+                    iline = StringUtil.format_string(v, format_1)
+                else:
+                    iline = StringUtil.format_string(v, format_1a)
+                out.write(iline + nl)
+
+                # line 2
+                v.clear()
+                v.append(div.get_username())
+                v.append(div.get_idvcom())
+                v.append(div.get_nrtn())
+                v.append(div.get_divefc())
+                v.append(div.get_area())
+                v.append(div.get_irturn())
+                v.append(div.get_demsrc())
+                iline = StringUtil.format_string(v, format_2)
+                out.write(iline + nl)
+
+                # line 3 - diversion efficiency
+                if div.get_divefc() < 0:
+                    # Monthly efficiencies
+                    for j in range(12):
+                        v.clear()
+                        v.append("")
+                        v.append(div.get_diveff(j))
+                        iline = StringUtil.format_string(v, format_3)
+                        # Each value is written with leading space and then a newline is written below
+                        out.write(iline)
+
+                    # Write the newline
+                    out.write(nl)
+
+                # line 4 - return information
+                nrtn = div.get_nrtn()
+                rivrets = div.get_return_flows()
+                for j in range(nrtn):
+                    v.clear()
+                    ret = rivrets[j]
+                    v.append(ret.get_crtnid())
+                    v.append(ret.get_pcttot())
+                    v.append(ret.get_irtndl())
+                    iline = StringUtil.format_string(v, format_4)
+                    out.write(iline + nl)
+        except Exception as e:
+            logger.warning("Exception writing diversions.", exc_info=True)
+            # Rethrow
+            raise
+        finally:
+            if out is not None:
+                out.close()

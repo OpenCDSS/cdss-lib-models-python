@@ -21,7 +21,7 @@
 #
 # NoticeEnd
 
-import DWR.StateMod.StateMod_Data as StateMod_Data
+from DWR.StateMod.StateMod_Data import StateMod_Data
 
 
 class StateMod_ReturnFlow(StateMod_Data):
@@ -44,7 +44,7 @@ class StateMod_ReturnFlow(StateMod_Data):
         # % of return flow to this river node.
         self.pcttot = None
 
-        # Delay (return q) table for return.
+        # Delay (return flow) table for return.
         self.irtndl = None
 
         # Indicates whether the returns are for daily (false) or monthly (true) data.
@@ -52,9 +52,27 @@ class StateMod_ReturnFlow(StateMod_Data):
 
         super().__init__()
         self.smdata_type = smdata_type
-        self.intitialize_statemod_returnflow()
+        self.initialize_statemod_returnflow()
 
-    def intitialize_statemod_returnflow(self):
+    def get_crtnid(self):
+        """
+        :return: the receiving river node ID
+        """
+        return self.crtnid
+
+    def get_irtndl(self):
+        """
+        :irtndl: the return flow table for return
+        """
+        return self.irtndl
+
+    def get_pcttot(self):
+        """
+        :pcttot: the percent of return flow to the river node
+        """
+        return self.pcttot
+
+    def initialize_statemod_returnflow(self):
         self.crtnid = ""
         self.pcttot = 100
         self.irtndl = 1

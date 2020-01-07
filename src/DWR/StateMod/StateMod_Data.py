@@ -36,8 +36,8 @@ class StateMod_Data:
     MISSING_LONG = -999
     MISSING_STRING = ""
 
-    # Reference to the _dataset into which all the StateMod_* data objects are
-    # being placed.  It is used statically because this way every object that extends
+    # Reference to the dataset into which all the StateMod_* data objects are # being placed.
+    # It is used statically because this way every object that extends
     # StateMod_Data will have a reference to the same dataset for using the set_dirty() method.
     dataset = None
 
@@ -95,11 +95,29 @@ class StateMod_Data:
 
         self.initialize()
 
+    def get_cgoto(self):
+        """
+        Return the cgoto
+        """
+        return self.cgoto
+
     def get_id(self):
         """
         Return the ID
         """
         return self.id
+
+    def get_name(self):
+        """
+        Return the name
+        """
+        return self.name
+
+    def get_switch(self):
+        """
+        Return the switch
+        """
+        return self.switch
 
     def initialize(self):
         """

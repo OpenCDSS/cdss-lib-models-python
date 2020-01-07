@@ -24,7 +24,7 @@
 import logging
 
 from DWR.StateMod.StateMod_Data import StateMod_Data
-from DWR.StateMod.StateMod_DataSet import StateMod_DataSet
+from DWR.StateMod.StateMod_DataSetComponentType import StateMod_DataSetComponentType
 
 from RTi.Util.String.StringUtil import StringUtil
 
@@ -77,7 +77,7 @@ class StateMod_StreamGage(StateMod_Data):
         data values are set to missing - this is suitable for use with StateDMI, where
         data will be filled with commands.
         """
-        self.smdata_type = StateMod_DataSet.COMP_STREAMGAGE_STATIONS
+        self.smdata_type = StateMod_DataSetComponentType.STREAMGAGE_STATIONS
         self.cgoto = ""
         self.historical_monthts = None
         self.historical_dayts = None

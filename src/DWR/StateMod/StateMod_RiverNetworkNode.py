@@ -25,7 +25,7 @@
 import logging
 
 from DWR.StateMod.StateMod_Data import StateMod_Data
-from DWR.StateMod.StateMod_DataSet import StateMod_DataSet
+from DWR.StateMod.StateMod_DataSetComponentType import StateMod_DataSetComponentType
 
 from RTi.Util.String.StringUtil import StringUtil
 
@@ -73,7 +73,7 @@ class StateMod_RiverNetworkNode(StateMod_Data):
         self.cstadn = ""
         self.comment = ""
         self.gwmaxr = -999
-        self.smdata_type = StateMod_DataSet.COMP_RIVER_NETWORK
+        self.smdata_type = StateMod_DataSetComponentType.RIVER_NETWORK
 
     @staticmethod
     def read_statemod_file(filename):

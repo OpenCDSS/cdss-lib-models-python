@@ -24,7 +24,7 @@
 import logging
 
 from DWR.StateMod.StateMod_Data import StateMod_Data
-from DWR.StateMod.StateMod_DataSet import StateMod_DataSet
+from DWR.StateMod.StateMod_DataSetComponentType import StateMod_DataSetComponentType
 # from DWR.StateMod.StateMod_Util import StateMod_Util
 
 from RTi.Util.String.StringUtil import StringUtil
@@ -52,7 +52,7 @@ class StateMod_DiversionRight(StateMod_Data):
         """
         Initialize data members.
         """
-        self.smdata_type = StateMod_DataSet.COMP_DIVERSION_RIGHTS
+        self.smdata_type = StateMod_DataSetComponentType.DIVERSION_RIGHTS
         self.irtem = "99999"
         self.dcridiv = 0
 
@@ -121,7 +121,7 @@ class StateMod_DiversionRight(StateMod_Data):
             self.dcrdiv = dcrdiv
             self.set_dirty(True)
             if (not self.is_clone) and (self.dataset is not None):
-                self.dataset.set_dirty(StateMod_DataSet.COMP_DIVERSION_RIGHTS, True)
+                self.dataset.set_dirty(StateMod_DataSetComponentType.DIVERSION_RIGHTS, True)
 
     def set_irtem(self, irtem):
         """
@@ -133,4 +133,4 @@ class StateMod_DiversionRight(StateMod_Data):
             self.irtem = irtem.strip()
             self.set_dirty(True)
             if (not self.is_clone) and (self.dataset is not None):
-                self.dataset.set_dirty(StateMod_DataSet.COMP_DIVERSION_RIGHTS, True)
+                self.dataset.set_dirty(StateMod_DataSetComponentType.DIVERSION_RIGHTS, True)

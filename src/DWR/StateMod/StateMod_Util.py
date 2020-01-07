@@ -58,7 +58,8 @@ class StateMod_Util:
     STATION_TYPE_WELL = "Well"
 
     # Used for looking up properties for data types which do not have separate components.
-    COMP_RESERVOIR_AREA_CAP = -102
+    # - TODO smalers 2020-01-01 need to evaluate use
+    # COMP_RESERVOIR_AREA_CAP = -102
 
     # Used by getStationTypes()
     station_types = [
